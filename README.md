@@ -1,85 +1,112 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+## Flower Store API (NestJS)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A production-ready NestJS API for a flower e-commerce store. Includes MongoDB, Redis caching, structured logging with Winston, Swagger docs, and Docker setups for development and production.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+### Features
+- **NestJS 10** with modular architecture
+- **MongoDB** via Mongoose
+- **Redis** cache and rate limiting ready
+- **Swagger** docs at `/api-docs`
+- **Winston** logging with daily rotation to `logs/`
+- **Docker**: dev services and full production stack
 
-## Description
+### Requirements
+- Node.js 18+
+- npm 9+
+- Docker and Docker Compose (optional but recommended)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### Getting Started (Local without Docker)
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Create a `.env` based on `env.example`:
+   ```bash
+   cp env.example .env
+   ```
+   Windows PowerShell:
+   ```powershell
+   Copy-Item env.example .env
+   ```
+   Windows CMD:
+   ```cmd
+   copy env.example .env
+   ```
+3. Ensure MongoDB and Redis are running locally (see Docker section for easy containers).
+4. Start the server:
+   ```bash
+   npm run start:dev
+   ```
+5. Open Swagger UI: `http://localhost:3000/api-docs`
 
-## Project setup
-
-```bash
-$ npm install
-```
-
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
+### Running with Docker (Production-like)
+This will build the app image and run MongoDB and Redis.
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker compose up -d
 ```
 
-## Resources
+- App is exposed internally and health-checked; access locally via port mapping if needed (adjust compose or use `docker compose logs -f app`).
+- Services:
+  - App (Nest) + Healthcheck `GET /api/health`
+  - MongoDB `mongo:27017` (mapped to `localhost:27017`)
+  - Redis `redis:6379` (mapped to `localhost:6379`)
 
-Check out a few resources that may come in handy when working with NestJS:
+To stop:
+```bash
+docker compose down -v
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Dev Services Only (MongoDB + Redis)
+Use this when running `npm run start:dev` locally but want Docker-managed databases:
 
-## Support
+```bash
+docker compose -f docker-compose.dev.yml up -d
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Shutdown:
+```bash
+docker compose -f docker-compose.dev.yml down -v
+```
 
-## Stay in touch
+### Environment Variables
+See `env.example` for defaults. Key variables:
+- `NODE_ENV` (development | production | test)
+- `MONGODB_URI` (e.g., `mongodb://localhost:27017/flower_store`)
+- `REDIS_HOST`, `REDIS_PORT`
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### NPM Scripts
+- `npm run start` – start normally
+- `npm run start:dev` – start in watch mode with `NODE_ENV=development`
+- `npm run start:prod` – run compiled app (`dist/main.js`)
+- `npm run build` – compile TypeScript
+- `npm run test` / `test:e2e` / `test:cov` – tests and coverage
+- `npm run lint` – lint and fix
 
-## License
+### API Docs
+Swagger UI is served at `GET /api-docs`. Update metadata in `src/main.ts`.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Logging
+Winston transports write daily-rotated logs to `logs/`:
+- `http-YYYY-MM-DD.log`
+- `error-YYYY-MM-DD.log`
+
+Console logs are formatted with Nest-like output. Configure logger in `src/config/logger/logger.config.ts`.
+
+### Project Structure
+```
+src/
+  common/            # shared utils, dto, constants
+  config/logger/     # winston configuration
+  modules/
+    auth/            # authentication and JWT
+    users/           # user domain
+```
+
+### Health Check
+The compose file checks `GET /api/health`. Ensure an endpoint exists or adjust the healthcheck in `docker-compose.yml`.
+
+### License
+UNLICENSED – for internal/learning use. See `package.json`.
+
+
