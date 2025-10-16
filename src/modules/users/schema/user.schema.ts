@@ -64,11 +64,11 @@ export class User {
   isDeleted: boolean;
 }
 
-const userSchema = SchemaFactory.createForClass(User);
+export const UserSchema = SchemaFactory.createForClass(User);
 
 // Registers the User schema within NestJS for dependency injection (so it can be used inside services/repositories)
 export const UserModel = MongooseModule.forFeature([
-  { name: User.name, schema: userSchema },
+  { name: User.name, schema: UserSchema },
 ]);
 
 // Defines a TypeScript type for a fully-hydrated Mongoose User document (with Mongoose methods and properties)
