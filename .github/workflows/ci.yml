@@ -1,0 +1,35 @@
+name: Continuous Integration Pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    branches:  [main]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+          cache: 'npm'
+      - name: Installing Dependencies
+        run: npm ci
+      - name: Running ESlint
+        run: npm run ci:lint
+      - name: Running Prettier
+        run: npm run ci:format
+      - name: Checking Git Status
+        run: git status
+      - name: Renaming env.example to .env.test
+        run: mv env.example .env.test
+      - name: Starting Docker DB Container
+        run: npm run ci:docker
+      - name: Build Application
+        run: npm run build
+      - name: Running API Tests
+        run: npm run ci:test
