@@ -25,7 +25,7 @@ export class User {
     unique: true,
     index: { name: 'username_index' },
   })
-  username: string;
+  userName: string;
 
   @Prop({
     required: true,
