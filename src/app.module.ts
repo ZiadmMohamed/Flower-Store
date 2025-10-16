@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
-import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
+import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './modules/users/users.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
@@ -37,7 +37,7 @@ import * as redisStore from 'cache-manager-redis-store';
     ThrottlerModule.forRoot([
       {
         ttl: 60000, // 60 seconds
-        limit: 10,  // 10 requests
+        limit: 10, // 10 requests
       },
     ]),
     PrometheusModule.register({
@@ -48,11 +48,12 @@ import * as redisStore from 'cache-manager-redis-store';
   ],
 
   controllers: [AppController],
-  providers: [AppService,
+  providers: [
+    AppService,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

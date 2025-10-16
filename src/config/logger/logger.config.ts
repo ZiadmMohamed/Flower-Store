@@ -11,7 +11,6 @@ const addMetadata = winston.format(info => {
   return info;
 });
 
-
 const httpRotateTransport = new DailyRotateFile({
   filename: 'logs/http-%DATE%.log',
   datePattern: 'YYYY-MM-DD',
@@ -26,7 +25,6 @@ const httpRotateTransport = new DailyRotateFile({
     winston.format.json(),
   ),
 });
-
 
 const errorRotateTransport = new DailyRotateFile({
   filename: 'logs/error-%DATE%.log',
