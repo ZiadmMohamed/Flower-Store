@@ -46,7 +46,7 @@ export const productModel = MongooseModule.forFeatureAsync([
     name: Product.name,
     useFactory() {
       productSchema.pre('updateOne', function (next) {
-        let update = this.getUpdate();
+        const update = this.getUpdate();
         if (update['productName']) {
           update['slug'] = slugify(update['productName'], { trim: true });
           this.setUpdate(update);
