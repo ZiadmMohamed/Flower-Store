@@ -40,3 +40,12 @@ export class SignUpDTO {
   @Type(() => Date)
   DOB?: Date;
 }
+
+export class LoginDTO {
+  @IsEmail()
+  @IsNotEmpty({ message: 'Email is required' })
+  email: string;
+
+  @IsString()
+  password: string;
+}
