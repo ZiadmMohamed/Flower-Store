@@ -7,6 +7,7 @@ import {
   Schema,
   SchemaFactory,
 } from '@nestjs/mongoose';
+import slugify from 'slugify';
 @Schema({ timestamps: true })
 export class Product implements Iproduct {
   @Prop({ required: true, min: 4 })
