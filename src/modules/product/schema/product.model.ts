@@ -30,13 +30,12 @@ export class Product implements Iproduct {
   image: Iimage;
   @Prop({ type: String, enum: productStatus, default: productStatus.INSTOCK })
   status: productStatus;
- 
 }
 export type productDocument = HydratedDocument<Product>;
 export const productSchema = SchemaFactory.createForClass(Product);
 export const productModel = MongooseModule.forFeature([
   {
-    name: Product.name, schema:productSchema
-    }
-  
+    name: Product.name,
+    schema: productSchema,
+  },
 ]);
