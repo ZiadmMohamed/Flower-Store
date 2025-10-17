@@ -1,6 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { SignUpDTO } from './DTOs/auth.dto';
 import { UserRepo } from 'src/common/Repositories/user.repo';
+import { Hash } from 'src/common/Security/hash.security';
 
 @Injectable()
 export class AuthService {
@@ -13,11 +14,14 @@ export class AuthService {
     const user = await this.userRepo.findByEmail(email);
     if (user) throw new ConflictException('User already exists');
 
+    // Hash password
+    const hashedPassword = Hash(password);
+
     const newUser = await this.userRepo.create({
       name,
       userName,
       email,
-      password,
+      password: hashedPassword,
       role,
       gender,
       phoneNumber,
