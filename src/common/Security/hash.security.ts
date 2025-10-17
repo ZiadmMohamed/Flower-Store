@@ -7,6 +7,9 @@ export const Hash = (
   return bcrypt.hashSync(plainText, saltRounds);
 };
 
-export const compareHash = (plainText: string, saltRounds: string): boolean => {
-  return bcrypt.compareSync(plainText, saltRounds);
+export const compareHash = (
+  plainText: string,
+  hashedPassword: string,
+): boolean => {
+  return bcrypt.compareSync(plainText, hashedPassword);
 };
