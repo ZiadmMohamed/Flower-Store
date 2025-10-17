@@ -7,7 +7,7 @@ import {
   Schema,
   SchemaFactory,
 } from '@nestjs/mongoose';
-import slugify from 'slugify';
+
 @Schema({ timestamps: true })
 export class Product implements Iproduct {
   @Prop({ required: true, min: 4 })
@@ -43,17 +43,8 @@ export type productDocument = HydratedDocument<Product>;
 export const productSchema = SchemaFactory.createForClass(Product);
 export const productModel = MongooseModule.forFeatureAsync([
   {
-    name: Product.name,
-    useFactory() {
-      productSchema.pre('updateOne', function (next) {
-        const update = this.getUpdate();
-        if (update['productName']) {
-          update['slug'] = slugify(update['productName'], { trim: true });
-          this.setUpdate(update);
-          next();
-        }
-      });
-      return productSchema;
-    },
+     name: Product.name, schema:productSchema
+
   },
+  
 ]);
