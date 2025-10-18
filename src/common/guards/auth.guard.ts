@@ -13,9 +13,7 @@ export class AuthGuard implements CanActivate {
   constructor(
     private readonly tokenService: TokenService,
     private readonly userRepo: UserRepo,
-  ) {
-    console.log('AuthGuard ctor — tokenService:', !!tokenService);
-  }
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
