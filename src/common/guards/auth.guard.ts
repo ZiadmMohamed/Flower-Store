@@ -6,14 +6,16 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UserRepo } from 'src/modules/Repositories/user.repo';
-import { TokenService } from './../Services/token.service';
+import { TokenService } from '../services/token.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly tokenService: TokenService,
     private readonly userRepo: UserRepo,
-  ) {}
+  ) {
+    console.log('AuthGuard ctor — tokenService:', !!tokenService);
+  }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
