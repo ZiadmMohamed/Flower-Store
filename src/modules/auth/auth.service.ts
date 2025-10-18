@@ -1,6 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { LoginDTO, SignUpDTO } from './DTOs/auth.dto';
-import { UserRepo } from 'src/common/Repositories/user.repo';
+import { UserRepo } from 'src/modules/Repositories/user.repo';
 import { compareHash, Hash } from 'src/common/Security/hash.security';
 import { TokenService } from 'src/common/services/token.service';
 
