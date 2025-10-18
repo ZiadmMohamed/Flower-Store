@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
   NotFoundException,
 } from '@nestjs/common';
-import { UserRepo } from 'src/common/Repositories/user.repo';
+import { UserRepo } from 'src/modules/Repositories/user.repo';
 import { TokenService } from './../Services/token.service';
 
 @Injectable()
