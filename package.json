@@ -102,10 +102,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
-    "moduleNameMapper": { // <--- ADD THIS SECTION
-      // Maps imports starting with 'src/' to the correct directory structure.
-      // This fixes the 'Cannot find module src/...' errors.
-      "^src/(.*)$": "<rootDir>/$1" 
+    "moduleNameMapper": {
+      "^src/(.*)$": "<rootDir>/$1"
     }
   }
 }
