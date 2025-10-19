@@ -1,7 +1,7 @@
-import { ProductRepo } from './../../common/Repositories/product.repo';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatProductDTO } from './DTO/create.product.dto';
 import { CloudService } from 'src/common/multer/cloud.service';
+import { ProductRepo } from 'src/common/Repositories/product.repo';
 
 @Injectable()
 export class ProductService {
