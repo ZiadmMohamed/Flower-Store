@@ -15,7 +15,7 @@ describe('ProductController', () => {
       providers: [
         {
           provide: ProductService,
-          useValue: mockProductService, 
+          useValue: mockProductService,
         },
       ],
     }).compile();
@@ -26,5 +26,4 @@ describe('ProductController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
-
 });
