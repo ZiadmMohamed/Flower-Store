@@ -4,8 +4,15 @@ export interface Iimage {
   public_id: string;
 }
 export enum productStatus {
-  INSTOCK = 'INSTOCK',
-  OUTSTOCK = 'OUTSTOCK',
+  INSTOCK = 'instock',
+  OUTSTOCK = 'outstock',
+}
+// flowers, bouquets, gifts, accessories).
+export enum productCategory {
+  FLOWERS = 'flowers',
+  BOUTUETS = 'boutuets',
+  GIFTS = 'gifts',
+  ACCESSORIES = 'accessories',
 }
 export interface Iproduct {
   productName: string;
@@ -13,7 +20,10 @@ export interface Iproduct {
   createdBy: Types.ObjectId;
   stock: number;
   originalPrice: number;
+  discountAmount: number;
+
   finalPrice: number;
   image: Iimage;
   status: productStatus;
+  category: productCategory;
 }
