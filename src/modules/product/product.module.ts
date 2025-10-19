@@ -6,8 +6,8 @@ import { ProductRepo } from 'src/common/Repositories/product.repo';
 import { productModel } from './schema/product.model';
 
 @Module({
-  imports:[productModel],
+  imports: [productModel],
   controllers: [ProductController],
-  providers: [ProductService,CloudService,ProductRepo],
+  providers: [ProductService, CloudService, ProductRepo],
 })
 export class ProductModule {}

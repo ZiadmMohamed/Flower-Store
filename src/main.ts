@@ -6,8 +6,6 @@ import { createLogger } from 'winston';
 import { winstonConfig } from './config/logger/logger.config';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { JwtExceptionFilter } from './common/exception-filters/jwt.exception-filter';
-import { config } from 'dotenv';
-config();
 async function bootstrap() {
   const loggerInstance = createLogger(winstonConfig);
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {

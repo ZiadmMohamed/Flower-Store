@@ -1,14 +1,10 @@
-import { Types } from 'mongoose';
-import { Iimage, productCategory, productStatus } from '../product.interface';
+import { productCategory, productStatus } from '../product.interface';
 import {
-  IsMongoId,
   IsNotEmpty,
   IsNumber,
   IsPositive,
   IsString,
   MinLength,
-  minLength,
-  validate,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 

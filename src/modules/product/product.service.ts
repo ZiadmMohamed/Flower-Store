@@ -10,14 +10,7 @@ export class ProductService {
     private ProductRepo: ProductRepo,
   ) {}
   async createProduct(body: CreatProductDTO, file: Express.Multer.File) {
-    const {
-      productName,
-      description,
-      stock,
-      originalPrice,
-      discountAmount,
-      category,
-    } = body;
+    const { originalPrice, discountAmount, category } = body;
 
     if (!file) {
       throw new BadRequestException('product image is require');

@@ -12,6 +12,8 @@ import { CreatProductDTO } from './DTO/create.product.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterOption } from 'src/common/multer/multer.options';
 import { filevalidation } from 'src/common/constants';
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Products')
 
 @Controller('product')
 @UsePipes(
