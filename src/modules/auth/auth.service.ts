@@ -1,14 +1,9 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-<<<<<<< HEAD
-import { SignUpDTO } from './DTOs/auth.dto';
-import { UserRepo } from 'src/modules/Repositories/user.repo';
-=======
 import { LoginDTO, SignUpDTO } from './DTOs/auth.dto';
 import { UserRepo } from 'src/modules/Repositories/user.repo';
 import { compareHash, Hash } from 'src/common/Security/hash.security';
 import { TokenService } from 'src/common/services/token.service';
 import { UserType } from '../users/schema/user.schema';
->>>>>>> 695f81b0ac5a2e7fca1a81b361e6e12ba9f8290a
 
 @Injectable()
 export class AuthService {
