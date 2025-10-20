@@ -32,7 +32,7 @@ describe('ProductService', () => {
           provide: ProductRepo,
           useValue: mockProductRepo,
         },
-        {provide:CategoryRepo,useValue:mockCategoryRepo}
+        { provide: CategoryRepo, useValue: mockCategoryRepo },
       ],
     }).compile();
 
