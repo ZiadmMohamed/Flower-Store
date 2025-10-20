@@ -1,4 +1,4 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { CategoryService } from './category.service';
 import { CategoryRepo } from '../Repositories/category.repo';
 
