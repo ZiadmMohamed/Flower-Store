@@ -14,7 +14,7 @@ describe('CategoryService', () => {
   };
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    await Test.createTestingModule({
       providers: [
         CategoryService,
         {
