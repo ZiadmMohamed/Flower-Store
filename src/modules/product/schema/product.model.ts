@@ -39,7 +39,7 @@ export class Product implements Iproduct {
   status: productStatus;
 
   @Prop({})
-  folderId: String;
+  folderId: string;
   @Prop({ type: Types.ObjectId, required: true })
   categoryId: Types.ObjectId;
 }
