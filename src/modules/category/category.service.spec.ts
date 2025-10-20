@@ -1,4 +1,4 @@
-import { Test } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import { CategoryService } from './category.service';
 import { CategoryRepo } from '../Repositories/category.repo';
 import { AuthGuard } from 'src/common/guards/auth.guard';
@@ -15,7 +15,7 @@ describe('CategoryService', () => {
   };
 
   beforeEach(async () => {
-    await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       providers: [
         CategoryService,
         {
@@ -27,6 +27,7 @@ describe('CategoryService', () => {
       .overrideGuard(AuthGuard)
       .useValue({ canActivate: () => true })
       .compile();
+    service = module.get<CategoryService>(CategoryService);
   });
   it('should be defined', () => {
     expect(service).toBeDefined();
