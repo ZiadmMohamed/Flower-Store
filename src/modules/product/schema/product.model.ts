@@ -2,7 +2,7 @@ import { HydratedDocument, Types } from 'mongoose';
 import {
   Iimage,
   Iproduct,
-  productCategory,
+
   productStatus,
 } from '../product.interface';
 import {
@@ -42,13 +42,12 @@ export class Product implements Iproduct {
     required: false,
   })
   status: productStatus;
-  @Prop({
-    type: String,
-    enum: productCategory,
-    default: productCategory.FLOWERS,
-    required: false,
-  })
-  category: productCategory;
+
+  @Prop({})
+  folderId:String
+    @Prop({ type: Types.ObjectId, required: true })
+
+  categoryId:Types.ObjectId
 }
 export type productDocument = HydratedDocument<Product>;
 export const productSchema = SchemaFactory.createForClass(Product);

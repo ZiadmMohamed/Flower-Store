@@ -45,7 +45,7 @@ export abstract class BaseRepo<TDoc extends Document> {
   }
 
   async updateOne(filters: FilterQuery<TDoc>, data: Partial<TDoc>) {
-    if (filters._id) await this.model.findByIdAndUpdate(filters._id);
-    return await this.model.updateOne(filters, data);
+    if (filters._id) await this.model.findByIdAndUpdate(filters._id ,data);
+    return await this.model.findOneAndUpdate(filters, data,{new:true});
   }
 }

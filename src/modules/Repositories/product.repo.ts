@@ -10,4 +10,9 @@ export class ProductRepo extends BaseRepo<productDocument> {
   ) {
     super(ProductModel);
   }
+
+  async findProductById(id):Promise<productDocument>{
+    return await this.ProductModel.findById(id)
+
+  }
 }

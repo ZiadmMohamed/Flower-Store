@@ -8,16 +8,12 @@ export enum productStatus {
   OUTSTOCK = 'outstock',
 }
 // flowers, bouquets, gifts, accessories).
-export enum productCategory {
-  FLOWERS = 'flowers',
-  BOUTUETS = 'boutuets',
-  GIFTS = 'gifts',
-  ACCESSORIES = 'accessories',
-}
+
 export interface Iproduct {
   productName: string;
   description: string;
   createdBy: Types.ObjectId;
+  categoryId: Types.ObjectId;
   stock: number;
   originalPrice: number;
   discountAmount: number;
@@ -25,5 +21,4 @@ export interface Iproduct {
   finalPrice: number;
   image: Iimage;
   status: productStatus;
-  category: productCategory;
 }
