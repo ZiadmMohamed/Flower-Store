@@ -1,4 +1,3 @@
-import { ObjectId, Types } from 'mongoose';
 import {
   Body,
   Controller,
@@ -19,13 +18,7 @@ import {
   CreateCategoryDTO,
   UpdateCategoryDTO,
 } from './DTO/create.category.DTO';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('category')
 @ApiTags('categories')
@@ -85,10 +78,7 @@ export class CategoryController {
     @GetUser() user: UserDocument,
     @Param() param: CategoryIdDTO,
   ): Promise<{ success: boolean; message: string }> {
-    const deleteCategory = await this.categoryService.deleteCategory(
-      user,
-      param,
-    );
+    await this.categoryService.deleteCategory(user, param);
     return { success: true, message: 'category delete successfully' };
   }
 

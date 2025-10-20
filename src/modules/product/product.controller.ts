@@ -54,7 +54,6 @@ export class ProductController {
   async createProduct(
     @Body() body: CreatProductDTO,
     @UploadedFile() file: Express.Multer.File,
-    @GetUser() user: UserDocument,
   ) {
     const product = await this.productService.createProduct(body, file);
     return { data: product, message: 'product created successfully' };
@@ -116,7 +115,7 @@ export class ProductController {
   async DeleteProduct(
     @Param() param: ProductIdDTO,
   ): Promise<{ success: boolean; message: string }> {
-    const product = await this.productService.DeleteProduct(param);
+    await this.productService.DeleteProduct(param);
     return { success: true, message: 'delete  Product successfully ' };
   }
 }
