@@ -34,7 +34,7 @@ export class CreatProductDTO {
   discountAmount: number;
   @IsString()
   status?: productStatus;
- 
+
   @IsMongoId()
-  categoryId:Types.ObjectId
+  categoryId: Types.ObjectId;
 }

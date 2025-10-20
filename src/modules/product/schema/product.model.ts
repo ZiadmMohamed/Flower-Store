@@ -1,10 +1,5 @@
 import { HydratedDocument, Types } from 'mongoose';
-import {
-  Iimage,
-  Iproduct,
-
-  productStatus,
-} from '../product.interface';
+import { Iimage, Iproduct, productStatus } from '../product.interface';
 import {
   MongooseModule,
   Prop,
@@ -44,10 +39,9 @@ export class Product implements Iproduct {
   status: productStatus;
 
   @Prop({})
-  folderId:String
-    @Prop({ type: Types.ObjectId, required: true })
-
-  categoryId:Types.ObjectId
+  folderId: String;
+  @Prop({ type: Types.ObjectId, required: true })
+  categoryId: Types.ObjectId;
 }
 export type productDocument = HydratedDocument<Product>;
 export const productSchema = SchemaFactory.createForClass(Product);

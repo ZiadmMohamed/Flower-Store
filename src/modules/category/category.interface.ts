@@ -1,7 +1,7 @@
-import { Types } from "mongoose";
+import { Types } from 'mongoose';
 
-export interface ICategory{
-    categoryName:String;
-    createdBy:Types.ObjectId;
-    updateBy:Types.ObjectId;
+export interface ICategory {
+  categoryName: String;
+  createdBy: Types.ObjectId;
+  updateBy: Types.ObjectId;
 }

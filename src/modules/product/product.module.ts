@@ -12,8 +12,16 @@ import { CategoryRepo } from '../Repositories/category.repo';
 import { categoryModel } from '../category/schema/category.model';
 
 @Module({
-  imports: [productModel,UserModel,categoryModel],
+  imports: [productModel, UserModel, categoryModel],
   controllers: [ProductController],
-  providers: [ProductService, CloudService, ProductRepo,TokenService,JwtService,UserRepo,CategoryRepo],
+  providers: [
+    ProductService,
+    CloudService,
+    ProductRepo,
+    TokenService,
+    JwtService,
+    UserRepo,
+    CategoryRepo,
+  ],
 })
 export class ProductModule {}

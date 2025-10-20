@@ -61,7 +61,7 @@ export class ProductController {
   }
 
   @Patch(':productId')
-   @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Roles(['admin'])
   @ApiOperation({ summary: 'update a new product with an image.' })
   @ApiResponse({ status: 201, description: 'Product successfully updated.' })
@@ -93,25 +93,30 @@ export class ProductController {
     };
   }
 
-  
   @Get(':productId')
-   @UseGuards(AuthGuard)
-  @Roles(['admin',"user"])
+  @UseGuards(AuthGuard)
+  @Roles(['admin', 'user'])
   @ApiOperation({ summary: 'get product .' })
   @ApiResponse({ status: 201, description: 'get  Product successfully .' })
-  async getProduct(@Param() param:ProductIdDTO):Promise<{success:boolean,message:string,data:productDocument}>{
-    const product=await this.productService.getProduct(param)
-    return{success:true,message:"get  Product successfully ",data:product}
-
+  async getProduct(
+    @Param() param: ProductIdDTO,
+  ): Promise<{ success: boolean; message: string; data: productDocument }> {
+    const product = await this.productService.getProduct(param);
+    return {
+      success: true,
+      message: 'get  Product successfully ',
+      data: product,
+    };
   }
-    @Delete(':productId')
-   @UseGuards(AuthGuard)
-  @Roles(['admin',"user"])
+  @Delete(':productId')
+  @UseGuards(AuthGuard)
+  @Roles(['admin', 'user'])
   @ApiOperation({ summary: 'delete product .' })
   @ApiResponse({ status: 201, description: 'delete  Product successfully .' })
-  async DeleteProduct(@Param() param:ProductIdDTO):Promise<{success:boolean,message:string}>{
-    const product=await this.productService.DeleteProduct(param)
-    return{success:true,message:"delete  Product successfully "}
-
+  async DeleteProduct(
+    @Param() param: ProductIdDTO,
+  ): Promise<{ success: boolean; message: string }> {
+    const product = await this.productService.DeleteProduct(param);
+    return { success: true, message: 'delete  Product successfully ' };
   }
 }

@@ -7,7 +7,6 @@ export enum productStatus {
   INSTOCK = 'instock',
   OUTSTOCK = 'outstock',
 }
-// flowers, bouquets, gifts, accessories).
 
 export interface Iproduct {
   productName: string;

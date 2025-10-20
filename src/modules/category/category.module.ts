@@ -9,8 +9,14 @@ import { UserRepo } from '../Repositories/user.repo';
 import { UserModel } from '../users/schema/user.schema';
 
 @Module({
-  imports:[categoryModel,UserModel],
+  imports: [categoryModel, UserModel],
   controllers: [CategoryController],
-  providers: [CategoryService,CategoryRepo,TokenService,JwtService,UserRepo],
+  providers: [
+    CategoryService,
+    CategoryRepo,
+    TokenService,
+    JwtService,
+    UserRepo,
+  ],
 })
 export class CategoryModule {}
