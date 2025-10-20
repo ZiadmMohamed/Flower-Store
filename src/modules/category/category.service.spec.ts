@@ -1,6 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { CategoryService } from './category.service';
 import { CategoryRepo } from '../Repositories/category.repo';
+import { AuthGuard } from 'src/common/guards/auth.guard';
 
 describe('CategoryService', () => {
   let service: CategoryService;
@@ -22,7 +23,10 @@ describe('CategoryService', () => {
           useValue: mockCategoryRepo, // <-- The mock object
         },
       ],
-    }).compile();
+    })
+      .overrideGuard(AuthGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
   });
   it('should be defined', () => {
     expect(service).toBeDefined();
