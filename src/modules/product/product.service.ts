@@ -8,7 +8,7 @@ import { CloudService } from 'src/common/multer/cloud.service';
 import { ProductRepo } from 'src/modules/Repositories/product.repo';
 import { UserDocument } from '../users/schema/user.schema';
 import { ProductIdDTO, updateProductDTO } from './DTO/update.product.DTO';
-import { Iimage } from './product.interface';
+import { Iimage } from './DTO/product.interface';
 import { CategoryRepo } from '../Repositories/category.repo';
 
 @Injectable()

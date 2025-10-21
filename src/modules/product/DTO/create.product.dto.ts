@@ -1,4 +1,4 @@
-import { productStatus } from '../product.interface';
+import { productStatus } from './product.interface';
 import {
   IsMongoId,
   IsNotEmpty,

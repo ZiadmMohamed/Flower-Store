@@ -1,5 +1,5 @@
 import { HydratedDocument, Types } from 'mongoose';
-import { Iimage, Iproduct, productStatus } from '../product.interface';
+import { Iimage, Iproduct, productStatus } from '../DTO/product.interface';
 import {
   MongooseModule,
   Prop,
