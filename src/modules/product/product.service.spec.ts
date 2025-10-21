@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProductService } from './product.service';
 import { CloudService } from 'src/common/multer/cloud.service';
 import { ProductRepo } from '../Repositories/product.repo';
+import { CategoryRepo } from '../Repositories/category.repo';
 
 const mockCloudService = {
   uploadFile: jest.fn(),
@@ -9,6 +10,10 @@ const mockCloudService = {
 };
 
 const mockProductRepo = {
+  create: jest.fn(),
+  findOne: jest.fn(),
+};
+const mockCategoryRepo = {
   create: jest.fn(),
   findOne: jest.fn(),
 };
@@ -27,6 +32,7 @@ describe('ProductService', () => {
           provide: ProductRepo,
           useValue: mockProductRepo,
         },
+        { provide: CategoryRepo, useValue: mockCategoryRepo },
       ],
     }).compile();
 

@@ -1,5 +1,6 @@
-import { productCategory, productStatus } from '../product.interface';
+import { productStatus } from './product.interface';
 import {
+  IsMongoId,
   IsNotEmpty,
   IsNumber,
   IsPositive,
@@ -7,6 +8,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { Types } from 'mongoose';
 
 export class CreatProductDTO {
   @IsString()
@@ -32,6 +34,7 @@ export class CreatProductDTO {
   discountAmount: number;
   @IsString()
   status?: productStatus;
-  @IsString()
-  category?: productCategory;
+
+  @IsMongoId()
+  categoryId: Types.ObjectId;
 }
