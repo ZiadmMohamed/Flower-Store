@@ -1,14 +1,18 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { LoginDTO, SignUpDTO } from './DTOs/auth.dto';
+import { LoginDTO, SignUpDTO, verifyAccountDTO } from './DTOs/auth.dto';
 import { UserRepo } from 'src/modules/Repositories/user.repo';
 import { compareHash, Hash } from 'src/common/Security/hash.security';
 import { TokenService } from 'src/common/services/token.service';
+import { MailerService } from 'src/common/services/mailer.service';
+import { OTPService } from 'src/common/services/otp.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userRepo: UserRepo,
     private readonly tokenService: TokenService,
+    private readonly otpService: OTPService,
+    private readonly mailerService: MailerService,
   ) {}
 
   async signUpService(body: SignUpDTO) {
@@ -18,10 +22,9 @@ export class AuthService {
     const user = await this.userRepo.findByEmail(email);
     if (user) throw new ConflictException('User already exists');
 
-    // Hash password
     const hashedPassword = Hash(password);
 
-    const newUser = await this.userRepo.create({
+    await this.userRepo.create({
       name,
       userName,
       email,
@@ -32,7 +35,29 @@ export class AuthService {
       DOB,
     });
 
-    return newUser;
+    // generate & send OTP
+    const otp = this.otpService.generateOTP();
+    await this.otpService.saveOTP(email, otp);
+    await this.mailerService.sendOTPEmail(email, otp);
+
+    return { message: 'User created successfully. Please verify your email.' };
+  }
+
+  async verifyAccountService(body: verifyAccountDTO) {
+    const { email, otp } = body;
+
+    const user = await this.userRepo.findByEmail(email);
+    if (!user) throw new ConflictException('User not found');
+
+    const isVerified = await this.otpService.verifyOTP(email, otp);
+    if (!isVerified) throw new ConflictException('Invalid OTP');
+
+    user.emailVerified = true;
+    await user.save();
+
+    await this.otpService.deleteOTP(email);
+
+    return { message: 'Account verified successfully' };
   }
 
   async loginService(body: LoginDTO) {
