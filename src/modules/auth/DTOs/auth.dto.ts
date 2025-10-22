@@ -49,3 +49,12 @@ export class LoginDTO {
   @IsString()
   password: string;
 }
+
+export class verifyAccountDTO {
+  @IsEmail()
+  @IsNotEmpty({ message: 'Email is required' })
+  email: string;
+
+  @IsNotEmpty({ message: 'OTP is required' })
+  otp: string;
+}

@@ -1,5 +1,5 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { LoginDTO, SignUpDTO } from './DTOs/auth.dto';
+import { LoginDTO, SignUpDTO, verifyAccountDTO } from './DTOs/auth.dto';
 import { UserRepo } from 'src/modules/Repositories/user.repo';
 import { compareHash, Hash } from 'src/common/Security/hash.security';
 import { TokenService } from 'src/common/services/token.service';
@@ -41,6 +41,23 @@ export class AuthService {
     await this.mailerService.sendOTPEmail(email, otp);
 
     return { message: 'User created successfully. Please verify your email.' };
+  }
+
+  async verifyAccountService(body: verifyAccountDTO) {
+    const { email, otp } = body;
+
+    const user = await this.userRepo.findByEmail(email);
+    if (!user) throw new ConflictException('User not found');
+
+    const isVerified = await this.otpService.verifyOTP(email, otp);
+    if (!isVerified) throw new ConflictException('Invalid OTP');
+
+    user.emailVerified = true;
+    await user.save();
+
+    await this.otpService.deleteOTP(email);
+
+    return { message: 'Account verified successfully' };
   }
 
   async loginService(body: LoginDTO) {
