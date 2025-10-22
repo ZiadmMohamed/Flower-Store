@@ -5,9 +5,10 @@ import { UserModel } from '../users/schema/user.schema';
 import { UserRepo } from 'src/modules/Repositories/user.repo';
 import { TokenService } from 'src/common/services/token.service';
 import { JwtService } from '@nestjs/jwt';
+import { RedisModule } from 'src/common/redis/redis.module';
 
 @Module({
-  imports: [UserModel],
+  imports: [UserModel, RedisModule],
   controllers: [AuthController],
   providers: [AuthService, UserRepo, TokenService, JwtService],
 })
