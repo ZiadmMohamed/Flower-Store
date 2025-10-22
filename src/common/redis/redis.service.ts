@@ -1,42 +1,36 @@
-import { Injectable, OnModuleDestroy } from '@nestjs/common';
-import Redis from 'ioredis';
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import { createClient, RedisClientType } from 'redis';
 
 @Injectable()
-export class RedisService implements OnModuleDestroy {
-  private client: Redis;
+export class RedisService implements OnModuleInit {
+  private client: RedisClientType;
 
-  constructor() {
-    this.client = new Redis({
-      host: process.env.REDIS_HOST || '127.0.0.1',
-      port: Number(process.env.REDIS_PORT) || 6379,
+  async onModuleInit() {
+    this.client = createClient({
+      socket: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: Number(process.env.REDIS_PORT) || 6379,
+      },
       password: process.env.REDIS_PASSWORD || undefined,
     });
 
-    this.client.on('connect', () => console.log('Redis connected'));
-    this.client.on('error', err => console.error('Redis error:', err));
-  }
-
-  getClient(): Redis {
-    return this.client;
+    this.client.on('error', err => console.error('❌ Redis Error:', err));
+    await this.client.connect();
+    console.log('✅ Redis connected successfully');
   }
 
   async set(key: string, value: string, ttlSeconds?: number) {
     if (ttlSeconds) {
-      await this.client.set(key, value, 'EX', ttlSeconds);
-    } else {
-      await this.client.set(key, value);
+      return this.client.setEx(key, ttlSeconds, value);
     }
+    return this.client.set(key, value);
   }
 
-  async get(key: string): Promise<string | null> {
+  async get(key: string) {
     return this.client.get(key);
   }
 
   async del(key: string) {
     return this.client.del(key);
-  }
-
-  async onModuleDestroy() {
-    await this.client.quit();
   }
 }
