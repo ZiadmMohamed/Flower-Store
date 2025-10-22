@@ -17,15 +17,15 @@ export class AuthController {
     return results;
   }
 
-  @Post('login')
-  async login(@Body() body: LoginDTO, @Res() res: Response) {
-    const results = await this.authService.loginService(body);
-    return res.status(200).json({ results });
-  }
-
   @Post('verify-account')
   async verifyAccount(@Body() body: verifyAccountDTO, @Res() res: Response) {
     const results = await this.authService.verifyAccountService(body);
+    return res.status(200).json({ results });
+  }
+
+  @Post('login')
+  async login(@Body() body: LoginDTO, @Res() res: Response) {
+    const results = await this.authService.loginService(body);
     return res.status(200).json({ results });
   }
 }

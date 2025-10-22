@@ -38,7 +38,7 @@ export class AuthService {
     // generate & send OTP
     const otp = this.otpService.generateOTP();
     await this.otpService.saveOTP(email, otp);
-    await this.mailerService.sendOTPEmail(email, otp);
+    this.mailerService.sendOTPEmail(email, otp);
 
     return { message: 'User created successfully. Please verify your email.' };
   }
