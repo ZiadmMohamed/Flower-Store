@@ -41,11 +41,10 @@ export abstract class BaseRepo<TDoc extends Document> {
 
   async find({
     filters = {},
-    select = '',
+
     populate = [],
-    page=1 ,
-  }: IFind<TDoc>): Promise<TDoc[] | Ipaginate<TDoc>|[]> {
-    
+    page = 1,
+  }: IFind<TDoc>): Promise<TDoc[] | Ipaginate<TDoc> | []> {
     if (page) {
       const limit = 7;
       const skip = (page - 1) * limit;
@@ -53,7 +52,8 @@ export abstract class BaseRepo<TDoc extends Document> {
       const data = await this.model
         .find(filters || {})
         .skip(skip)
-        .limit(limit).exec()
+        .limit(limit)
+        .exec();
       const itemsPerPage = data.length;
       const pages = Math.ceil(items / limit);
       return {
@@ -65,7 +65,7 @@ export abstract class BaseRepo<TDoc extends Document> {
       };
     }
     if (populate) {
-     return await this.model.find(filters || {}).populate(populate);
+      return await this.model.find(filters || {}).populate(populate);
     }
     return await this.model.find(filters || {}).exec();
   }

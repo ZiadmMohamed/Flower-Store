@@ -1,5 +1,4 @@
 import {
-  BadGatewayException,
   Body,
   Controller,
   Delete,
@@ -126,9 +125,7 @@ export class ProductController {
   @Get('')
   @UseGuards(AuthGuard)
   @Roles(['admin', 'user'])
-  async getAllORfilterproduct(
-    @Query() query: GetAllProductDTO,
-  ): Promise<{
+  async getAllORfilterproduct(@Query() query: GetAllProductDTO): Promise<{
     success: boolean;
     message: string;
     data: productDocument[] | Ipaginate<productDocument> | [];
