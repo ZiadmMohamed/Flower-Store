@@ -126,8 +126,18 @@ export class ProductController {
   @Get('')
   @UseGuards(AuthGuard)
   @Roles(['admin', 'user'])
-  async getAllORfilterproduct(@Query() query:GetAllProductDTO):Promise<{success:boolean,message:string,data:productDocument[]|Ipaginate<productDocument>|[]}> {
-    const AllProduct=await this.productService.getAllORfilterproduct(query)
-    return {success:true,message:"get All Product successfully",data:AllProduct }
+  async getAllORfilterproduct(
+    @Query() query: GetAllProductDTO,
+  ): Promise<{
+    success: boolean;
+    message: string;
+    data: productDocument[] | Ipaginate<productDocument> | [];
+  }> {
+    const AllProduct = await this.productService.getAllORfilterproduct(query);
+    return {
+      success: true,
+      message: 'get All Product successfully',
+      data: AllProduct,
+    };
   }
 }

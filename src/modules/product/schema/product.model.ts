@@ -41,7 +41,7 @@ export class Product implements Iproduct {
 
   @Prop({})
   folderId: string;
-  @Prop({ type: Types.ObjectId, ref:Category.name,required: true })
+  @Prop({ type: Types.ObjectId, ref: Category.name, required: true })
   categoryId: Types.ObjectId;
 }
 export type productDocument = HydratedDocument<Product>;

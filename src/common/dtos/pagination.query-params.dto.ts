@@ -8,7 +8,7 @@ export class PaginationQueryParams {
   @IsInt()
   @Min(1)
   @Type(() => Number)
-  page : number;
+  page: number;
 
   @ApiProperty({ type: Number })
   @IsOptional()
@@ -16,6 +16,5 @@ export class PaginationQueryParams {
   @Min(1)
   @Max(100)
   @Type(() => Number)
-  limit :number;
+  limit: number;
 }
-

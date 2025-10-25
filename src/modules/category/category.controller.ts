@@ -111,7 +111,7 @@ export class CategoryController {
   async getAllCategory(): Promise<{
     success: boolean;
     message: string;
-    data: categoryDocument[] ;
+    data: categoryDocument[];
   }> {
     const getAllCategory = await this.categoryService.getAllCategory();
     return {
