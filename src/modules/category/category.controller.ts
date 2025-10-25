@@ -111,13 +111,13 @@ export class CategoryController {
   async getAllCategory(): Promise<{
     success: boolean;
     message: string;
-    data: categoryDocument[] | null;
+    data: categoryDocument[] ;
   }> {
     const getAllCategory = await this.categoryService.getAllCategory();
     return {
       success: true,
       message: ' get all  category successfully',
-      data: getAllCategory,
+      data: getAllCategory as categoryDocument[],
     };
   }
 }

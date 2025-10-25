@@ -7,6 +7,7 @@ import {
   Schema,
   SchemaFactory,
 } from '@nestjs/mongoose';
+import { Category } from 'src/modules/category/schema/category.model';
 @Schema({ timestamps: true })
 export class Product implements Iproduct {
   @Prop({ required: true, min: 4 })
@@ -40,7 +41,7 @@ export class Product implements Iproduct {
 
   @Prop({})
   folderId: string;
-  @Prop({ type: Types.ObjectId, required: true })
+  @Prop({ type: Types.ObjectId, ref:Category.name,required: true })
   categoryId: Types.ObjectId;
 }
 export type productDocument = HydratedDocument<Product>;

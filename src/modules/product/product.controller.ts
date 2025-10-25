@@ -1,4 +1,5 @@
 import {
+  BadGatewayException,
   Body,
   Controller,
   Delete,
@@ -6,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -30,6 +32,8 @@ import { GetUser } from 'src/common/decorators/get-user.decorator';
 import { UserDocument } from '../users/schema/user.schema';
 import { ProductIdDTO, updateProductDTO } from './DTO/update.product.DTO';
 import { productDocument } from './schema/product.model';
+import { GetAllProductDTO } from './DTO/GetAllProductDTO.product.DTO';
+import { Ipaginate } from '../Repositories/base.repo';
 @ApiTags('Products')
 @Controller('product')
 @UsePipes(
@@ -117,5 +121,13 @@ export class ProductController {
   ): Promise<{ success: boolean; message: string }> {
     await this.productService.DeleteProduct(param);
     return { success: true, message: 'delete  Product successfully ' };
+  }
+
+  @Get('')
+  @UseGuards(AuthGuard)
+  @Roles(['admin', 'user'])
+  async getAllORfilterproduct(@Query() query:GetAllProductDTO):Promise<{success:boolean,message:string,data:productDocument[]|Ipaginate<productDocument>|[]}> {
+    const AllProduct=await this.productService.getAllORfilterproduct(query)
+    return {success:true,message:"get All Product successfully",data:AllProduct }
   }
 }

@@ -10,6 +10,10 @@ import { UserDocument } from '../users/schema/user.schema';
 import { ProductIdDTO, updateProductDTO } from './DTO/update.product.DTO';
 import { Iimage } from './DTO/product.interface';
 import { CategoryRepo } from '../Repositories/category.repo';
+import { GetAllProductDTO } from './DTO/GetAllProductDTO.product.DTO';
+import { populate } from 'dotenv';
+import { FilterQuery } from 'mongoose';
+import { productDocument } from './schema/product.model';
 
 @Injectable()
 export class ProductService {
@@ -103,5 +107,38 @@ export class ProductService {
       throw new NotFoundException('product is not exist');
     }
     return await this.ProductRepo.deleteOne(productId);
+  }
+  async getAllORfilterproduct(query?: GetAllProductDTO) {
+    const { name, minLength, maxLength, category,page } = query;
+    console.log(name,"mm");
+    let filters:FilterQuery<productDocument>={}
+    if (name) {
+    filters.productName= {$regex:`${name}`,$options:'i'} 
+    } 
+      
+    
+  
+    if (minLength || maxLength) {
+    filters.finalPrice={ $gte: minLength||0, $lte: maxLength } 
+    } 
+    let categorydoc
+    if (category) {
+      categorydoc= await this.categoryRepo.findOne({
+        filters: {categoryName:{$regex:`${category}`,$options:'i'}},
+      
+      });
+      
+  
+      
+      if(!categorydoc) throw new NotFoundException(`category name ${category} not found`)
+filters.categoryId=categorydoc.id
+        console.log(categorydoc,"mpp");
+
+      
+    } 
+    
+  
+
+    return await this.ProductRepo.find({filters,page,populate:[{path:"category",select:"categoryName"}]})
   }
 }
