@@ -2,7 +2,7 @@ import { Controller, ValidationPipe } from '@nestjs/common';
 import { Body, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
-import { SignUpDTO, LoginDTO, verifyAccountDTO } from './DTOs/auth.dto';
+import { SignUpDTO, LoginDTO, VerifyAccountDTO } from './DTOs/auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,7 +18,7 @@ export class AuthController {
   }
 
   @Post('verify-account')
-  async verifyAccount(@Body() body: verifyAccountDTO, @Res() res: Response) {
+  async verifyAccount(@Body() body: VerifyAccountDTO, @Res() res: Response) {
     const results = await this.authService.verifyAccountService(body);
     return res.status(200).json({ results });
   }

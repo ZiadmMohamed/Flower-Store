@@ -12,6 +12,6 @@ export class ProductRepo extends BaseRepo<productDocument> {
   }
 
   async findProductById(id): Promise<productDocument> {
-    return await this.ProductModel.findById(id);
+    return this.ProductModel.findById(id);
   }
 }

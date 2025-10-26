@@ -50,7 +50,7 @@ export class LoginDTO {
   password: string;
 }
 
-export class verifyAccountDTO {
+export class VerifyAccountDTO {
   @IsEmail()
   @IsNotEmpty({ message: 'Email is required' })
   email: string;

@@ -13,6 +13,6 @@ export class UserRepo extends BaseRepo<UserType> {
   }
 
   async findByEmail(email: string): Promise<UserType | null> {
-    return await this.userModel.findOne({ email }).select('+password');
+    return this.userModel.findOne({ email }).select('+password');
   }
 }

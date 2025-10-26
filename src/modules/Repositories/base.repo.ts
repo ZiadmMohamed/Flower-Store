@@ -16,11 +16,11 @@ export abstract class BaseRepo<TDoc extends Document> {
   constructor(private readonly model: Model<TDoc>) {}
 
   async create(data: Partial<TDoc>): Promise<TDoc> {
-    return await this.model.create(data);
+    return this.model.create(data);
   }
 
   async save(newDoc: TDoc) {
-    return await newDoc.save();
+    return newDoc.save();
   }
 
   async findOne({
@@ -28,7 +28,7 @@ export abstract class BaseRepo<TDoc extends Document> {
     select = '',
     populate = [],
   }: IFindOne<TDoc>): Promise<TDoc | null> {
-    return await this.model.findOne(filters, select).populate(populate);
+    return this.model.findOne(filters, select).populate(populate);
   }
 
   async find({
@@ -36,16 +36,16 @@ export abstract class BaseRepo<TDoc extends Document> {
     select = '',
     populate = [],
   }: IFind<TDoc>): Promise<TDoc[]> {
-    return await this.model.find(filters, select).populate(populate);
+    return this.model.find(filters, select).populate(populate);
   }
 
   async deleteOne(filters: FilterQuery<TDoc>) {
     if (filters._id) await this.model.findByIdAndDelete(filters._id);
-    return await this.model.findOneAndDelete(filters);
+    return this.model.findOneAndDelete(filters);
   }
 
   async updateOne(filters: FilterQuery<TDoc>, data: Partial<TDoc>) {
     if (filters._id) await this.model.findByIdAndUpdate(filters._id, data);
-    return await this.model.findOneAndUpdate(filters, data, { new: true });
+    return this.model.findOneAndUpdate(filters, data, { new: true });
   }
 }

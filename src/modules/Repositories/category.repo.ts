@@ -13,6 +13,6 @@ export class CategoryRepo extends BaseRepo<categoryDocument> {
   }
 
   async findCategoryById(id): Promise<categoryDocument> {
-    return await this.categoryModel.findById(id);
+    return this.categoryModel.findById(id);
   }
 }

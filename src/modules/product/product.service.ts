@@ -7,7 +7,7 @@ import { CreatProductDTO } from './DTO/create.product.dto';
 import { CloudService } from 'src/common/multer/cloud.service';
 import { ProductRepo } from 'src/modules/Repositories/product.repo';
 import { UserDocument } from '../users/schema/user.schema';
-import { ProductIdDTO, updateProductDTO } from './DTO/update.product.DTO';
+import { ProductIdDTO, UpdateProductDTO } from './DTO/update.product.DTO';
 import { Iimage } from './DTO/product.interface';
 import { CategoryRepo } from '../Repositories/category.repo';
 
@@ -52,7 +52,7 @@ export class ProductService {
   async updateProduct(
     param: ProductIdDTO,
     user: UserDocument,
-    body: updateProductDTO,
+    body: UpdateProductDTO,
     file?: Express.Multer.File,
   ) {
     const { productId } = param;

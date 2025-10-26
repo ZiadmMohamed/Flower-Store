@@ -28,7 +28,7 @@ import { AuthGuard } from 'src/common/guards/auth.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { GetUser } from 'src/common/decorators/get-user.decorator';
 import { UserDocument } from '../users/schema/user.schema';
-import { ProductIdDTO, updateProductDTO } from './DTO/update.product.DTO';
+import { ProductIdDTO, UpdateProductDTO } from './DTO/update.product.DTO';
 import { productDocument } from './schema/product.model';
 @ApiTags('Products')
 @Controller('product')
@@ -65,14 +65,14 @@ export class ProductController {
   @ApiOperation({ summary: 'update a new product with an image.' })
   @ApiResponse({ status: 201, description: 'Product successfully updated.' })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: updateProductDTO })
+  @ApiBody({ type: UpdateProductDTO })
   @UseInterceptors(
     FileInterceptor('file', MulterOption({ validation: filevalidation.image })),
   )
   async updateProduct(
     @Param() param: ProductIdDTO,
     @GetUser() user: UserDocument,
-    @Body() body: updateProductDTO,
+    @Body() body: UpdateProductDTO,
     @UploadedFile() file?: Express.Multer.File,
   ): Promise<{
     success: boolean;
