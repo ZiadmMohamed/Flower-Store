@@ -43,8 +43,6 @@ export abstract class BaseRepo<TDoc extends Document> {
     filters = {},
 
     populate = [],
-  }: IFind<TDoc>): Promise<TDoc[]> {
-    return this.model.find(filters, select).populate(populate);
     page = 1,
   }: IFind<TDoc>): Promise<TDoc[] | Ipaginate<TDoc> | []> {
     if (page) {
