@@ -3,7 +3,7 @@ import { CreatProductDTO } from './create.product.dto';
 import { Types } from 'mongoose';
 import { IsMongoId } from 'class-validator';
 
-export class updateProductDTO extends PartialType(CreatProductDTO) {
+export class UpdateProductDTO extends PartialType(CreatProductDTO) {
   @IsMongoId()
   categoryId: Types.ObjectId;
 }

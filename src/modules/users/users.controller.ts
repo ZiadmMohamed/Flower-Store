@@ -12,7 +12,7 @@ export class UsersController {
 
   @Get('view-profile')
   @ApiBearerAuth()
-  @Roles(['user', 'admin', 'guest'])
+  @Roles(['user', 'admin'])
   @UseGuards(AuthGuard, RoleGuard)
   async viewProfileService(@Req() req: Request, @Res() res: Response) {
     const authuser = req['authUser'];
