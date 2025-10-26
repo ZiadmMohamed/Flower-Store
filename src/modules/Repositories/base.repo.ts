@@ -10,6 +10,14 @@ interface IFind<TDoc> {
   filters?: FilterQuery<TDoc>;
   select?: string;
   populate?: PopulateOptions[];
+  page?: number;
+}
+export interface Ipaginate<TDoc> {
+  items: number;
+  currentPages: number;
+  data: TDoc[] | [];
+  itemsPerPage: number;
+  numberOfpages: number;
 }
 
 export abstract class BaseRepo<TDoc extends Document> {
@@ -33,10 +41,35 @@ export abstract class BaseRepo<TDoc extends Document> {
 
   async find({
     filters = {},
-    select = '',
+
     populate = [],
   }: IFind<TDoc>): Promise<TDoc[]> {
     return this.model.find(filters, select).populate(populate);
+    page = 1,
+  }: IFind<TDoc>): Promise<TDoc[] | Ipaginate<TDoc> | []> {
+    if (page) {
+      const limit = 7;
+      const skip = (page - 1) * limit;
+      const items = await this.model.countDocuments(filters || {});
+      const data = await this.model
+        .find(filters || {})
+        .skip(skip)
+        .limit(limit)
+        .exec();
+      const itemsPerPage = data.length;
+      const pages = Math.ceil(items / limit);
+      return {
+        items,
+        currentPages: page,
+        data,
+        itemsPerPage,
+        numberOfpages: Number(pages),
+      };
+    }
+    if (populate) {
+      return await this.model.find(filters || {}).populate(populate);
+    }
+    return await this.model.find(filters || {}).exec();
   }
 
   async deleteOne(filters: FilterQuery<TDoc>) {
