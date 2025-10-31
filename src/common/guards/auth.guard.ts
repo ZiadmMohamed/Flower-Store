@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
   NotFoundException,
 } from '@nestjs/common';
-import { UserRepo } from 'src/modules/Repositories/user.repo';
+import { UserRepo } from 'src/modules/users/user.repo';
 import { TokenService } from '../services/token.service';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class AuthGuard implements CanActivate {
   constructor(
     private readonly tokenService: TokenService,
     private readonly userRepo: UserRepo,
-  ) {}
+  ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();

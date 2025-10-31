@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BaseRepo } from './base.repo';
+import { BaseRepo } from '../../utils/base.repo';
 import { UserType, User } from 'src/modules/users/schema/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';

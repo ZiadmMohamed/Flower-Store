@@ -32,7 +32,7 @@ import { UserDocument } from '../users/schema/user.schema';
 import { ProductIdDTO, UpdateProductDTO } from './DTO/update.product.DTO';
 import { productDocument } from './schema/product.model';
 import { GetAllProductDTO } from './DTO/GetAllProductDTO.product.DTO';
-import { Ipaginate } from '../Repositories/base.repo';
+import { Ipaginate } from '../../utils/base.repo';
 @ApiTags('Products')
 @Controller('product')
 @UsePipes(
@@ -97,7 +97,6 @@ export class ProductController {
 
   @Get(':productId')
   @UseGuards(AuthGuard)
-  @Roles(['admin', 'user'])
   @ApiOperation({ summary: 'get product .' })
   @ApiResponse({ status: 201, description: 'get  Product successfully .' })
   async getProduct(
@@ -124,7 +123,6 @@ export class ProductController {
 
   @Get('')
   @UseGuards(AuthGuard)
-  @Roles(['admin', 'user'])
   async getAllORfilterproduct(@Query() query: GetAllProductDTO): Promise<{
     success: boolean;
     message: string;

@@ -52,3 +52,5 @@ export const productModel = MongooseModule.forFeature([
     schema: productSchema,
   },
 ]);
+
+export type ProductType = HydratedDocument<Product>;

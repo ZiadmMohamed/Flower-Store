@@ -5,11 +5,11 @@ import {
 } from '@nestjs/common';
 import { CreatProductDTO } from './DTO/create.product.dto';
 import { CloudService } from 'src/common/multer/cloud.service';
-import { ProductRepo } from 'src/modules/Repositories/product.repo';
+import { ProductRepo } from 'src/modules/product/product.repo';
 import { UserDocument } from '../users/schema/user.schema';
 import { ProductIdDTO, UpdateProductDTO } from './DTO/update.product.DTO';
 import { Iimage } from './DTO/product.interface';
-import { CategoryRepo } from '../Repositories/category.repo';
+import { CategoryRepo } from '../category/category.repo';
 import { GetAllProductDTO } from './DTO/GetAllProductDTO.product.DTO';
 import { FilterQuery } from 'mongoose';
 import { productDocument } from './schema/product.model';
@@ -20,7 +20,7 @@ export class ProductService {
     private cloudservice: CloudService,
     private ProductRepo: ProductRepo,
     private categoryRepo: CategoryRepo,
-  ) {}
+  ) { }
   async createProduct(body: CreatProductDTO, file: Express.Multer.File) {
     const { originalPrice, discountAmount, categoryId } = body;
     const categoryExist = await this.categoryRepo.findCategoryById(categoryId);
@@ -83,7 +83,7 @@ export class ProductService {
         Number(body.originalPrice || product.originalPrice) -
         (Number(body.originalPrice || product.originalPrice) *
           Number(body.discountAmount || product.discountAmount)) /
-          100;
+        100;
     }
     const updatedProduct = await this.ProductRepo.updateOne(
       { _id: productId },

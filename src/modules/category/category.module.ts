@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CategoryController } from './category.controller';
 import { categoryModel } from './schema/category.model';
-import { CategoryRepo } from '../Repositories/category.repo';
+import { CategoryRepo } from './category.repo';
 import { TokenService } from 'src/common/services/token.service';
 import { JwtService } from '@nestjs/jwt';
-import { UserRepo } from '../Repositories/user.repo';
+import { UserRepo } from '../users/user.repo';
 import { UserModel } from '../users/schema/user.schema';
 
 @Module({
@@ -19,4 +19,4 @@ import { UserModel } from '../users/schema/user.schema';
     UserRepo,
   ],
 })
-export class CategoryModule {}
+export class CategoryModule { }

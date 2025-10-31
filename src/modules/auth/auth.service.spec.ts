@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { UserRepo } from 'src/modules/Repositories/user.repo';
+import { UserRepo } from 'src/modules/users/user.repo';
 import { TokenService } from 'src/common/services/token.service';
 import { MailerService } from 'src/common/services/mailer.service';
 import { OTPService } from 'src/common/services/otp.service';

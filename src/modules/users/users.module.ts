@@ -6,7 +6,7 @@ import { User, UserSchema } from './schema/user.schema';
 import { JwtService } from '@nestjs/jwt';
 import { TokenService } from 'src/common/services/token.service';
 import { AuthService } from '../auth/auth.service';
-import { UserRepo } from '../Repositories/user.repo';
+import { UserRepo } from './user.repo';
 import { OTPService } from 'src/common/services/otp.service';
 import { MailerService } from 'src/common/services/mailer.service';
 
@@ -24,5 +24,6 @@ import { MailerService } from 'src/common/services/mailer.service';
     OTPService,
     MailerService,
   ],
+  exports: [UserRepo],
 })
 export class UsersModule {}

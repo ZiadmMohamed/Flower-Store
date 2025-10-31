@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductService } from './product.service';
 import { CloudService } from 'src/common/multer/cloud.service';
-import { ProductRepo } from '../Repositories/product.repo';
-import { CategoryRepo } from '../Repositories/category.repo';
+import { ProductRepo } from './product.repo';
+import { CategoryRepo } from '../category/category.repo';
 
 const mockCloudService = {
   uploadFile: jest.fn(),
