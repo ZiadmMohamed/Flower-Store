@@ -21,4 +21,4 @@ import { OTPService } from 'src/common/services/otp.service';
     MailerService,
   ],
 })
-export class AuthModule { }
+export class AuthModule {}

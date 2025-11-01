@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { Product } from 'src/modules/product/schema/product.model';
 import { User } from 'src/modules/users/schema/user.schema';
+import { PAYMENT_METHODS } from '../dto/create-order.dto';
 
 export type OrderDocument = HydratedDocument<Order>;
 
@@ -21,8 +22,13 @@ export class Order {
   @Prop({ type: String, required: true })
   address: string;
 
-  @Prop({ type: String, required: true })
-  paymentMethod: string;
+  @Prop({
+    type: String,
+    enum: PAYMENT_METHODS,
+    required: true,
+    default: PAYMENT_METHODS.CASH,
+  })
+  paymentMethod: PAYMENT_METHODS;
 
   @Prop({ type: String, required: false })
   promoCode?: string;

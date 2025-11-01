@@ -1,12 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
+  IsEnum,
   IsMongoId,
   IsNotEmpty,
   IsNumber,
   IsString,
 } from 'class-validator';
 import { Types } from 'mongoose';
+
+export enum PAYMENT_METHODS {
+  CREDIT_CARD = 'credit_card',
+  CASH = 'cash',
+}
 
 class CreateOrderProductItem {
   @ApiProperty({ type: String })
@@ -26,10 +32,10 @@ export class CreateOrderDto {
   @IsNotEmpty()
   address: string;
 
-  @ApiProperty({ type: String })
-  @IsString()
+  @ApiProperty({ enum: PAYMENT_METHODS })
+  @IsEnum(PAYMENT_METHODS)
   @IsNotEmpty()
-  paymentMethod: string;
+  paymentMethod: PAYMENT_METHODS;
 
   @ApiProperty({ type: [CreateOrderProductItem] })
   @IsArray()
