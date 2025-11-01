@@ -6,8 +6,11 @@ import {
   IsNotEmpty,
   IsNumber,
   IsString,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { Types } from 'mongoose';
+import { ProductExists } from 'src/common/validators/product-exists.validator';
 
 export enum PAYMENT_METHODS {
   CREDIT_CARD = 'credit_card',
@@ -18,6 +21,7 @@ class CreateOrderProductItem {
   @ApiProperty({ type: String })
   @IsMongoId()
   @IsNotEmpty()
+  @ProductExists({ message: 'Product does not exist' })
   productId: Types.ObjectId;
 
   @ApiProperty({ type: Number })
@@ -40,5 +44,7 @@ export class CreateOrderDto {
   @ApiProperty({ type: [CreateOrderProductItem] })
   @IsArray()
   @IsNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => CreateOrderProductItem)
   products: CreateOrderProductItem[];
 }

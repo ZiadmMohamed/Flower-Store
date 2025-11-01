@@ -23,5 +23,6 @@ import { categoryModel } from '../category/schema/category.model';
     UserRepo,
     CategoryRepo,
   ],
+  exports: [ProductRepo],
 })
 export class ProductModule { }

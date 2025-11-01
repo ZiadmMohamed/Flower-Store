@@ -7,11 +7,26 @@ import { winstonConfig } from './config/logger/logger.config';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { JwtExceptionFilter } from './common/exception-filters/jwt.exception-filter';
 import { MongooseExceptionFilter } from './common/exception-filters/mongoos.exception-filter';
+import { ValidationPipe } from '@nestjs/common';
+import { useContainer } from 'class-validator';
+
 async function bootstrap() {
   const loggerInstance = createLogger(winstonConfig);
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: WinstonModule.createLogger({ instance: loggerInstance }),
   });
+
+  // Enable dependency injection for custom validators
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
+  // Enable global validation pipe
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
   app.useGlobalFilters(new JwtExceptionFilter());
   app.useGlobalFilters(new MongooseExceptionFilter());
