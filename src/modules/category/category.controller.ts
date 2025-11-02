@@ -17,7 +17,7 @@ import {
   CategoryIdDTO,
   CreateCategoryDTO,
   UpdateCategoryDTO,
-} from './DTO/create.category.DTO';
+} from './DTO/category.DTO';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('category')
