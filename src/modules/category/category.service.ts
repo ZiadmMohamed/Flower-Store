@@ -9,7 +9,7 @@ import {
   CategoryIdDTO,
   CreateCategoryDTO,
   UpdateCategoryDTO,
-} from './DTO/create.category.DTO';
+} from './DTO/category.DTO';
 import { Types } from 'mongoose';
 
 @Injectable()
