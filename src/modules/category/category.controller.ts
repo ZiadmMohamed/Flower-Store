@@ -83,8 +83,8 @@ export class CategoryController {
   }
 
   @Get(':categoryId')
-  @UseGuards(AuthGuard)
-  @Roles(['admin', 'user'])
+  // @UseGuards(AuthGuard)
+  // @Roles(['admin', 'user'])
   @ApiResponse({ status: 201, description: 'get category' })
   @ApiOperation({ summary: 'get  category .' })
   async getCategory(
@@ -104,8 +104,8 @@ export class CategoryController {
   }
 
   @Get('')
-  @UseGuards(AuthGuard)
-  @Roles(['admin', 'user'])
+  // @UseGuards(AuthGuard)
+  // @Roles(['admin', 'user'])
   @ApiResponse({ status: 201, description: 'get all category' })
   @ApiOperation({ summary: 'get all category .' })
   async getAllCategory(): Promise<{
