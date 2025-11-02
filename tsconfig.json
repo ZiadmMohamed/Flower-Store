@@ -10,6 +10,9 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "paths": {
+      "src/*": ["src/*"] // <--- 2. Maps imports starting with 'src/' to the actual 'src' directory
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,

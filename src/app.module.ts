@@ -10,6 +10,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
+import { ProductModule } from './modules/product/product.module';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -45,6 +47,8 @@ import * as redisStore from 'cache-manager-redis-store';
     }),
     AuthModule,
     UsersModule,
+    ProductModule,
+    CategoryModule,
   ],
 
   controllers: [AppController],
