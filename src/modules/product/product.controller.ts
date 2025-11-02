@@ -96,8 +96,8 @@ export class ProductController {
   }
 
   @Get(':productId')
-  @UseGuards(AuthGuard)
-  @Roles(['admin', 'user'])
+  // @UseGuards(AuthGuard)
+  // @Roles(['admin', 'user'])
   @ApiOperation({ summary: 'get product .' })
   @ApiResponse({ status: 201, description: 'get  Product successfully .' })
   async getProduct(
@@ -123,8 +123,8 @@ export class ProductController {
   }
 
   @Get('')
-  @UseGuards(AuthGuard)
-  @Roles(['admin', 'user'])
+  // @UseGuards(AuthGuard)
+  // @Roles(['admin', 'user'])
   async getAllORfilterproduct(@Query() query: GetAllProductDTO): Promise<{
     success: boolean;
     message: string;
