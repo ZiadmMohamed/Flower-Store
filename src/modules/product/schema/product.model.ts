@@ -12,16 +12,22 @@ import { Category } from 'src/modules/category/schema/category.model';
 export class Product implements Iproduct {
   @Prop({ required: true, min: 4 })
   productName: string;
+
   @Prop({ required: true, min: 4 })
   description: string;
+
   @Prop({ type: Types.ObjectId, required: false })
   createdBy: Types.ObjectId;
+
   @Prop({ type: Number, required: true })
   stock: number;
+
   @Prop({ type: Number, required: true })
   originalPrice: number;
+
   @Prop({ type: Number, required: false })
   finalPrice: number;
+
   @Prop({ type: Number, required: false })
   discountAmount: number;
 
@@ -43,6 +49,7 @@ export class Product implements Iproduct {
 
   @Prop({})
   folderId: string;
+
   @Prop({ type: Types.ObjectId, ref: Category.name, required: true })
   categoryId: Types.ObjectId;
 }

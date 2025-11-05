@@ -5,6 +5,7 @@ import {
   IsMongoId,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
@@ -38,6 +39,11 @@ export class CreateOrderDto {
   @IsEnum(PAYMENT_METHODS)
   @IsNotEmpty()
   paymentMethod: PAYMENT_METHODS;
+  // TODO: add promo code validation
+  @ApiProperty({ type: String, required: false })
+  @IsOptional()
+  @IsString()
+  promoCode?: string;
 
   @ApiProperty({ type: [CreateOrderProductItem] })
   @IsArray()

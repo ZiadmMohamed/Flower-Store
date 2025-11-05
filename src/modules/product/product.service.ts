@@ -142,7 +142,7 @@ export class ProductService {
 
   async validateProductsStock(
     products: CreateOrderProductItem[],
-  ): Promise<void> {
+  ): Promise<productDocument[]> {
     const stockChecks = products.map(async product => {
       const inStock = await this.ProductRepo.isProductInStock(product);
       if (!inStock) {
@@ -150,8 +150,10 @@ export class ProductService {
           `Product ${product.productId} is not in stock or has insufficient quantity`,
         );
       }
+
+      return inStock;
     });
 
-    await Promise.all(stockChecks);
+    return Promise.all(stockChecks);
   }
 }
