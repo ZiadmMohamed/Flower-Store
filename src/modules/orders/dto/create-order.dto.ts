@@ -10,18 +10,16 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Types } from 'mongoose';
-import { ProductExists } from 'src/common/validators/product-exists.validator';
 
 export enum PAYMENT_METHODS {
   CREDIT_CARD = 'credit_card',
   CASH = 'cash',
 }
 
-class CreateOrderProductItem {
+export class CreateOrderProductItem {
   @ApiProperty({ type: String })
   @IsMongoId()
   @IsNotEmpty()
-  @ProductExists({ message: 'Product does not exist' })
   productId: Types.ObjectId;
 
   @ApiProperty({ type: Number })

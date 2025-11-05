@@ -24,13 +24,15 @@ export class Product implements Iproduct {
   finalPrice: number;
   @Prop({ type: Number, required: false })
   discountAmount: number;
+
   @Prop(
     raw({
-      secure_url: { type: String, required: true },
-      public_id: { type: String, required: true },
+      secure_url: { type: String, required: false },
+      public_id: { type: String, required: false },
     }),
   )
-  image: Iimage;
+  image: Iimage | null;
+
   @Prop({
     type: String,
     enum: productStatus,

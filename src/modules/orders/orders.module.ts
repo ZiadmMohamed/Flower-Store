@@ -25,4 +25,4 @@ import { ProductExistsConstraint } from 'src/common/validators/product-exists.va
     ProductModule,
   ],
 })
-export class OrdersModule { }
+export class OrdersModule {}
