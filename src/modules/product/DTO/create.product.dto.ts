@@ -11,7 +11,6 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Types } from 'mongoose';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreatProductDTO {
   @ApiProperty({ type: String })

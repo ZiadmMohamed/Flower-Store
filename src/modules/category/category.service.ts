@@ -14,7 +14,7 @@ import { Types } from 'mongoose';
 
 @Injectable()
 export class CategoryService {
-  constructor(private categoryRepo: CategoryRepo) { }
+  constructor(private categoryRepo: CategoryRepo) {}
 
   async createCategory(user: UserDocument, body: CreateCategoryDTO) {
     const categoryExist = await this.categoryRepo.findOne({
