@@ -4,11 +4,11 @@ import { OrdersService } from './orders.service';
 import { OrderRepo } from './orders.repo';
 import { Order, OrderSchema } from './schema/order.schema';
 import { MongooseModule } from '@nestjs/mongoose';
-import { TokenService } from 'src/common/services/token.service';
+import { TokenService } from '../../common/services/token.service';
 import { JwtService } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
 import { ProductModule } from '../product/product.module';
-import { ProductExistsConstraint } from 'src/common/validators/product-exists.validator';
+import { ProductExistsConstraint } from '../../common/validators/product-exists.validator';
 
 @Module({
   controllers: [OrdersController],

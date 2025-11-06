@@ -6,7 +6,7 @@ import {
   ValidationArguments,
 } from 'class-validator';
 import { Injectable } from '@nestjs/common';
-import { ProductRepo } from 'src/modules/product/product.repo';
+import { ProductRepo } from '../../modules/product/product.repo';
 import { Types } from 'mongoose';
 
 @ValidatorConstraint({ name: 'ProductExists', async: true })

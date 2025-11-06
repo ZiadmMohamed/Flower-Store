@@ -8,9 +8,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { AuthGuard } from 'src/common/guards/auth.guard';
-import { Roles } from 'src/common/decorators/roles.decorator';
-import { GetUser } from 'src/common/decorators/get-user.decorator';
+import { AuthGuard } from '../../common/guards/auth.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { GetUser } from '../../common/decorators/get-user.decorator';
 import { UserDocument } from '../users/schema/user.schema';
 import { categoryDocument } from './schema/category.model';
 import {

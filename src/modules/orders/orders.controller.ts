@@ -1,10 +1,10 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { GetUser } from 'src/common/decorators/get-user.decorator';
-import { AuthGuard } from 'src/common/guards/auth.guard';
+import { GetUser } from '../../common/decorators/get-user.decorator';
+import { AuthGuard } from '../../common/guards/auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { Roles } from 'src/common/decorators/roles.decorator';
+import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRoles } from '../users/schema/user.types';
 import { UserType } from '../users/schema/user.schema';
 

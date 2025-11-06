@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreatProductDTO } from './DTO/create.product.dto';
-import { CloudService } from 'src/common/multer/cloud.service';
-import { ProductRepo } from 'src/modules/product/product.repo';
+import { CloudService } from '../../common/multer/cloud.service';
+import { ProductRepo } from './product.repo';
 import { ProductIdDTO, UpdateProductDTO } from './DTO/update.product.DTO';
 import { Iimage } from './DTO/product.interface';
 import { CategoryRepo } from '../category/category.repo';

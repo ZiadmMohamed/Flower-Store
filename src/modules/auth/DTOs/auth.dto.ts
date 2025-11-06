@@ -8,7 +8,7 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { GenderType, UserRoles } from 'src/modules/users/schema/user.types';
+import { GenderType, UserRoles } from '../../users/schema/user.types';
 
 export class SignUpDTO {
   @ApiProperty({ type: String })

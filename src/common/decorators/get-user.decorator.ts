@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { UserType } from 'src/modules/users/schema/user.schema';
+import { UserType } from '../../modules/users/schema/user.schema';
 
 export const GetUser = createParamDecorator(
   (_: never, ctx: ExecutionContext): UserType => {

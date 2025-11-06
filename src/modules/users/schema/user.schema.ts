@@ -1,6 +1,6 @@
 import { MongooseModule, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, HydratedDocument } from 'mongoose';
-import { UserRoles, GenderType } from 'src/modules/users/schema/user.types';
+import { UserRoles, GenderType } from './user.types';
 
 export type UserDocument = User & Document;
 

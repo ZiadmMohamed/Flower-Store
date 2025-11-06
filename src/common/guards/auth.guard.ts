@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
   NotFoundException,
 } from '@nestjs/common';
-import { UserRepo } from 'src/modules/users/user.repo';
+import { UserRepo } from '../../modules/users/user.repo';
 import { TokenService } from '../services/token.service';
 import { Request } from 'express';
 

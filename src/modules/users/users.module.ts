@@ -4,11 +4,11 @@ import { UsersService } from './users.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schema/user.schema';
 import { JwtService } from '@nestjs/jwt';
-import { TokenService } from 'src/common/services/token.service';
+import { TokenService } from '../../common/services/token.service';
 import { AuthService } from '../auth/auth.service';
 import { UserRepo } from './user.repo';
-import { OTPService } from 'src/common/services/otp.service';
-import { MailerService } from 'src/common/services/mailer.service';
+import { OTPService } from '../../common/services/otp.service';
+import { MailerService } from '../../common/services/mailer.service';
 
 @Module({
   imports: [

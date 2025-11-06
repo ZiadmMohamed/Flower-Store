@@ -16,8 +16,8 @@ import {
 import { ProductService } from './product.service';
 import { CreatProductDTO } from './DTO/create.product.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { MulterOption } from 'src/common/multer/multer.options';
-import { filevalidation } from 'src/common/constants';
+import { MulterOption } from '../../common/multer/multer.options';
+import { filevalidation } from '../../common/constants';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -26,8 +26,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthGuard } from 'src/common/guards/auth.guard';
-import { Roles } from 'src/common/decorators/roles.decorator';
+import { AuthGuard } from '../../common/guards/auth.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
 import { ProductIdDTO, UpdateProductDTO } from './DTO/update.product.DTO';
 import { productDocument } from './schema/product.model';
 import { GetAllProductDTO } from './DTO/GetAllProductDTO.product.DTO';

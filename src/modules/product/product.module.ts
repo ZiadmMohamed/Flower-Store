@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
-import { CloudService } from 'src/common/multer/cloud.service';
-import { ProductRepo } from 'src/modules/product/product.repo';
+import { CloudService } from '../../common/multer/cloud.service';
+import { ProductRepo } from './product.repo';
 import { productModel } from './schema/product.model';
-import { TokenService } from 'src/common/services/token.service';
+import { TokenService } from '../../common/services/token.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserRepo } from '../users/user.repo';
 import { UserModel } from '../users/schema/user.schema';

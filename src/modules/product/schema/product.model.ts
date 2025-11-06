@@ -7,7 +7,7 @@ import {
   Schema,
   SchemaFactory,
 } from '@nestjs/mongoose';
-import { Category } from 'src/modules/category/schema/category.model';
+import { Category } from '../../category/schema/category.model';
 @Schema({ timestamps: true })
 export class Product implements Iproduct {
   @Prop({ required: true, min: 4 })

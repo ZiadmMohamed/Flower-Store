@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepo } from 'src/modules/users/user.repo';
+import { UserRepo } from './user.repo';
 import { UserType } from './schema/user.schema';
 import { UpdateUserDTO } from './DTOs/users.dto';
 

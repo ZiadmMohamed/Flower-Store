@@ -5,18 +5,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { Types } from 'mongoose';
 import { ProductService } from '../product/product.service';
 import { productDocument } from '../product/schema/product.model';
-
-interface OrderCalculation {
-  products: Array<{
-    productId: Types.ObjectId;
-    quantity: number;
-    priceAtPurchase: number;
-    subtotal: number;
-  }>;
-  subtotal: number;
-  discount: number;
-  total: number;
-}
+import { OrderCalculation } from './dto/order';
 
 @Injectable()
 export class OrdersService {
@@ -96,7 +85,6 @@ export class OrdersService {
     };
   }
 
-  // (format: ORD-YYYYMMDD-XXXXXX)
   private async generateOrderNumber(): Promise<string> {
     const date = new Date();
     const year = date.getFullYear();
@@ -104,7 +92,6 @@ export class OrdersService {
     const day = String(date.getDate()).padStart(2, '0');
     const dateStr = `${year}${month}${day}`;
 
-    // Get count of today's orders to generate sequential number
     const startOfDay = new Date(date.setHours(0, 0, 0, 0));
     const endOfDay = new Date(date.setHours(23, 59, 59, 999));
 
