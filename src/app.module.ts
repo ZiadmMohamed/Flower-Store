@@ -13,6 +13,7 @@ import * as redisStore from 'cache-manager-redis-store';
 import { ProductModule } from './modules/product/product.module';
 import { CategoryModule } from './modules/category/category.module';
 import { OrdersModule } from './modules/orders/orders.module';
+import { CartModule } from './modules/cart/cart.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { OrdersModule } from './modules/orders/orders.module';
     ProductModule,
     CategoryModule,
     OrdersModule,
+    CartModule,
   ],
 
   controllers: [AppController],

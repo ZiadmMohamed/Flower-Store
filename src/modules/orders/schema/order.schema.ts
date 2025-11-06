@@ -35,6 +35,7 @@ class OrderProductItem {
   @Prop({ type: Number, required: true })
   subtotal: number;
 }
+const OrderProductItemSchema = SchemaFactory.createForClass(OrderProductItem);
 
 @Schema({ timestamps: true })
 export class Order {
@@ -77,7 +78,7 @@ export class Order {
   @Prop({ type: Number, required: false, default: 0 })
   discount: number;
 
-  @Prop({ type: [OrderProductItem], required: true })
+  @Prop({ type: [OrderProductItemSchema], required: true })
   products: OrderProductItem[];
 
   @Prop({ type: Number, required: true })

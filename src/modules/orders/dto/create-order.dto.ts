@@ -21,6 +21,7 @@ export class CreateOrderProductItem {
   @ApiProperty({ type: String })
   @IsMongoId()
   @IsNotEmpty()
+  // @ProductExists()
   productId: Types.ObjectId;
 
   @ApiProperty({ type: Number })
