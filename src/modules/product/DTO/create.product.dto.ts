@@ -4,12 +4,14 @@ import {
   IsMongoId,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
   MinLength,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Types } from 'mongoose';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreatProductDTO {
   @ApiProperty({ type: String })
@@ -38,6 +40,7 @@ export class CreatProductDTO {
 
   @ApiProperty({ type: Number })
   @IsNumber()
+  @IsOptional()
   @Type(() => Number)
   discountAmount: number;
 

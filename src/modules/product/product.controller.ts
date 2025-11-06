@@ -68,7 +68,7 @@ export class ProductController {
   @ApiOperation({ summary: 'update a new product with an image.' })
   @ApiResponse({ status: 201, description: 'Product successfully updated.' })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: UpdateProductDTO })
+  @ApiBody({ type: updateProductDTO })
   @UseInterceptors(
     FileInterceptor('file', MulterOption({ validation: filevalidation.image })),
   )
