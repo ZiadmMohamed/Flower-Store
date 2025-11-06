@@ -4,15 +4,15 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreatProductDTO } from './DTO/create.product.dto';
-import { CloudService } from 'src/common/multer/cloud.service';
-import { ProductRepo } from 'src/modules/Repositories/product.repo';
-import { UserDocument } from '../users/schema/user.schema';
-import { ProductIdDTO, updateProductDTO } from './DTO/update.product.DTO';
+import { CloudService } from '../../common/multer/cloud.service';
+import { ProductRepo } from './product.repo';
+import { ProductIdDTO, UpdateProductDTO } from './DTO/update.product.DTO';
 import { Iimage } from './DTO/product.interface';
-import { CategoryRepo } from '../Repositories/category.repo';
+import { CategoryRepo } from '../category/category.repo';
 import { GetAllProductDTO } from './DTO/GetAllProductDTO.product.DTO';
 import { FilterQuery } from 'mongoose';
 import { productDocument } from './schema/product.model';
+import { CreateOrderProductItem } from '../orders/dto/create-order.dto';
 
 @Injectable()
 export class ProductService {
@@ -21,32 +21,31 @@ export class ProductService {
     private ProductRepo: ProductRepo,
     private categoryRepo: CategoryRepo,
   ) {}
-  async createProduct(body: CreatProductDTO, file: Express.Multer.File) {
+  async createProduct(body: CreatProductDTO, file?: Express.Multer.File) {
     const { originalPrice, discountAmount, categoryId } = body;
+
     const categoryExist = await this.categoryRepo.findCategoryById(categoryId);
     if (!categoryExist) {
       throw new BadRequestException('category is not exist');
     }
-    if (!file) {
-      throw new BadRequestException('product image is require');
+
+    if (file) {
+      const folderId = String(Math.random() * (999999 - 100000 + 1) + 1);
+      await this.cloudservice.uploadFile(file, {
+        folder: `${process.env.app_name}/${categoryId}/product/${folderId}`,
+      });
     }
-    const folderId = String(Math.random() * (999999 - 100000 + 1) + 1);
-    const image = await this.cloudservice.uploadFile(file, {
-      folder: `${process.env.app_name}/${categoryId}/product/${folderId}`,
-    });
+
     let finalPrice: number;
     if (discountAmount) {
       finalPrice =
         Number(originalPrice) -
         (Number(originalPrice) * Number(discountAmount)) / 100;
     }
-    console.log('final', finalPrice);
 
     const product = await this.ProductRepo.create({
       ...body,
-      image,
       finalPrice,
-      folderId,
       categoryId,
     });
     return product;
@@ -54,22 +53,15 @@ export class ProductService {
 
   async updateProduct(
     param: ProductIdDTO,
-    user: UserDocument,
-    body: updateProductDTO,
+    body: UpdateProductDTO,
     file?: Express.Multer.File,
   ) {
     const { productId } = param;
-    const categoryExist = await this.categoryRepo.findCategoryById(
-      body.categoryId,
-    );
-    if (!categoryExist) {
-      throw new BadRequestException('category is not exist');
-    }
-
     const product = await this.ProductRepo.findProductById(productId);
     if (!product) {
       throw new NotFoundException('product is not exist');
     }
+
     let image: Iimage;
     if (file) {
       await this.cloudservice.destroyFile(product.image.public_id);
@@ -77,6 +69,7 @@ export class ProductService {
         folder: `${process.env.app_name}/product/${product.categoryId}/${product.folderId}`,
       });
     }
+
     let finalPrice: number;
     if (body.discountAmount || body.originalPrice) {
       finalPrice =
@@ -85,20 +78,23 @@ export class ProductService {
           Number(body.discountAmount || product.discountAmount)) /
           100;
     }
+
     const updatedProduct = await this.ProductRepo.updateOne(
       { _id: productId },
       { ...body, finalPrice, image },
     );
     return updatedProduct;
   }
+
   async getProduct(param: ProductIdDTO) {
     const { productId } = param;
     const product = await this.ProductRepo.findProductById(productId);
-    if (!product) {
-      throw new NotFoundException('product is not exist');
-    }
+
+    if (!product) throw new NotFoundException('product is not exist');
+
     return await this.ProductRepo.findOne({ filters: { _id: productId } });
   }
+
   async DeleteProduct(param: ProductIdDTO) {
     const { productId } = param;
     const product = await this.ProductRepo.findProductById(productId);
@@ -107,9 +103,10 @@ export class ProductService {
     }
     return await this.ProductRepo.deleteOne(productId);
   }
+
   async getAllORfilterproduct(query?: GetAllProductDTO) {
     const { name, minLength, maxLength, category, page } = query;
-    console.log(name, 'mm');
+
     const filters: FilterQuery<productDocument> = {};
     if (name) {
       filters.productName = { $regex: `${name}`, $options: 'i' };
@@ -135,5 +132,28 @@ export class ProductService {
       page,
       populate: [{ path: 'category', select: 'categoryName' }],
     });
+  }
+
+  async decreaseProductsStock(
+    updates: CreateOrderProductItem[],
+  ): Promise<void> {
+    await this.ProductRepo.decreaseProductsStock(updates);
+  }
+
+  async validateProductsStock(
+    products: CreateOrderProductItem[],
+  ): Promise<productDocument[]> {
+    const stockChecks = products.map(async product => {
+      const inStock = await this.ProductRepo.isProductInStock(product);
+      if (!inStock) {
+        throw new BadRequestException(
+          `Product ${product.productId} is not in stock or has insufficient quantity`,
+        );
+      }
+
+      return inStock;
+    });
+
+    return Promise.all(stockChecks);
   }
 }

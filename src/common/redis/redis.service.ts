@@ -19,6 +19,13 @@ export class RedisService implements OnModuleInit {
     console.log('✅ Redis connected successfully');
   }
 
+  async onModuleDestroy() {
+    if (this.client) {
+      await this.client.quit();
+      console.log('🧹 Redis disconnected');
+    }
+  }
+
   async set(key: string, value: string, ttlSeconds?: number) {
     if (ttlSeconds) {
       return this.client.setEx(key, ttlSeconds, value);

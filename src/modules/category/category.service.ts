@@ -1,4 +1,4 @@
-import { CategoryRepo } from './../Repositories/category.repo';
+import { CategoryRepo } from './category.repo';
 import {
   ConflictException,
   Injectable,

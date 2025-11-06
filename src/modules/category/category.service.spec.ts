@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoryService } from './category.service';
-import { CategoryRepo } from '../Repositories/category.repo';
+import { CategoryRepo } from './category.repo';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 
 describe('CategoryService', () => {

@@ -1,4 +1,4 @@
-import { User } from 'src/modules/users/schema/user.schema';
+import { User } from '../../users/schema/user.schema';
 import { Injectable } from '@nestjs/common';
 import { ICategory } from '../DTO/category.interface';
 import { MongooseModule, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
