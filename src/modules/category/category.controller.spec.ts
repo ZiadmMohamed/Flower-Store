@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoryController } from './category.controller';
 import { CategoryService } from './category.service';
-import { CategoryRepo } from '../Repositories/category.repo';
+import { CategoryRepo } from './category.repo';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { TokenService } from 'src/common/services/token.service';
-import { UserRepo } from '../Repositories/user.repo';
+import { UserRepo } from '../users/user.repo';
 
 describe('CategoryController', () => {
   let controller: CategoryController;

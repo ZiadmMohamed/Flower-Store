@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
-import { UserRepo } from '../Repositories/user.repo';
+import { UserRepo } from '../users/user.repo';
 import { TokenService } from 'src/common/services/token.service';
 
 const mockProductService = {

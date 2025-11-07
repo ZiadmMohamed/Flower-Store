@@ -1,10 +1,10 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { PayloadType } from 'src/modules/auth/constants';
+import { UserType } from '../../modules/users/schema/user.schema';
 
 export const GetUser = createParamDecorator(
-  (_: never, ctx: ExecutionContext): PayloadType => {
+  (_: never, ctx: ExecutionContext): UserType => {
     const req = ctx.switchToHttp().getRequest();
 
-    return req.authUser as PayloadType;
+    return req.authUser as UserType;
   },
 );

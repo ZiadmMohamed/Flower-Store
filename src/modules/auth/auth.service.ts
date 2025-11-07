@@ -1,10 +1,10 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { LoginDTO, SignUpDTO, VerifyAccountDTO } from './DTOs/auth.dto';
-import { UserRepo } from 'src/modules/Repositories/user.repo';
-import { compareHash, Hash } from 'src/common/Security/hash.security';
-import { TokenService } from 'src/common/services/token.service';
-import { MailerService } from 'src/common/services/mailer.service';
-import { OTPService } from 'src/common/services/otp.service';
+import { UserRepo } from '../users/user.repo';
+import { compareHash, Hash } from '../../common/Security/hash.security';
+import { TokenService } from '../../common/services/token.service';
+import { MailerService } from '../../common/services/mailer.service';
+import { OTPService } from '../../common/services/otp.service';
 
 @Injectable()
 export class AuthService {

@@ -10,9 +10,9 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { Roles } from 'src/common/decorators/roles.decorator';
-import { AuthGuard } from 'src/common/guards/auth.guard';
-import { RoleGuard } from 'src/common/guards/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { AuthGuard } from '../../common/guards/auth.guard';
+import { RoleGuard } from '../../common/guards/roles.guard';
 import { UpdateUserDTO } from './DTOs/users.dto';
 
 @Controller('users')

@@ -16,23 +16,22 @@ import {
 import { ProductService } from './product.service';
 import { CreatProductDTO } from './DTO/create.product.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { MulterOption } from 'src/common/multer/multer.options';
-import { filevalidation } from 'src/common/constants';
+import { MulterOption } from '../../common/multer/multer.options';
+import { filevalidation } from '../../common/constants';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiConsumes,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthGuard } from 'src/common/guards/auth.guard';
-import { Roles } from 'src/common/decorators/roles.decorator';
-import { GetUser } from 'src/common/decorators/get-user.decorator';
-import { UserDocument } from '../users/schema/user.schema';
+import { AuthGuard } from '../../common/guards/auth.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
 import { ProductIdDTO, UpdateProductDTO } from './DTO/update.product.DTO';
 import { productDocument } from './schema/product.model';
 import { GetAllProductDTO } from './DTO/GetAllProductDTO.product.DTO';
-import { Ipaginate } from '../Repositories/base.repo';
+import { Ipaginate } from '../../utils/base.repo';
 @ApiTags('Products')
 @Controller('product')
 @UsePipes(
@@ -54,9 +53,10 @@ export class ProductController {
   @ApiResponse({ status: 201, description: 'Product successfully created.' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreatProductDTO })
+  @ApiBearerAuth()
   async createProduct(
     @Body() body: CreatProductDTO,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
     const product = await this.productService.createProduct(body, file);
     return { data: product, message: 'product created successfully' };
@@ -74,7 +74,6 @@ export class ProductController {
   )
   async updateProduct(
     @Param() param: ProductIdDTO,
-    @GetUser() user: UserDocument,
     @Body() body: UpdateProductDTO,
     @UploadedFile() file?: Express.Multer.File,
   ): Promise<{
@@ -84,7 +83,6 @@ export class ProductController {
   }> {
     const updatedProduct = await this.productService.updateProduct(
       param,
-      user,
       body,
       file,
     );
@@ -96,10 +94,6 @@ export class ProductController {
   }
 
   @Get(':productId')
-  @UseGuards(AuthGuard)
-  @Roles(['admin', 'user'])
-  @ApiOperation({ summary: 'get product .' })
-  @ApiResponse({ status: 201, description: 'get  Product successfully .' })
   async getProduct(
     @Param() param: ProductIdDTO,
   ): Promise<{ success: boolean; message: string; data: productDocument }> {
@@ -110,6 +104,7 @@ export class ProductController {
       data: product,
     };
   }
+
   @Delete(':productId')
   @UseGuards(AuthGuard)
   @Roles(['admin', 'user'])
@@ -122,9 +117,7 @@ export class ProductController {
     return { success: true, message: 'delete  Product successfully ' };
   }
 
-  @Get('')
-  @UseGuards(AuthGuard)
-  @Roles(['admin', 'user'])
+  @Get()
   async getAllORfilterproduct(@Query() query: GetAllProductDTO): Promise<{
     success: boolean;
     message: string;

@@ -5,8 +5,9 @@ import {
   UnauthorizedException,
   NotFoundException,
 } from '@nestjs/common';
-import { UserRepo } from 'src/modules/Repositories/user.repo';
+import { UserRepo } from '../../modules/users/user.repo';
 import { TokenService } from '../services/token.service';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -18,11 +19,11 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
 
-    const { authorization } = request.headers;
-    if (!authorization)
-      throw new UnauthorizedException('Authorization header is required');
+    const token = this.extractTokenFromHeader(request);
 
-    const data = this.tokenService.verifyToken(authorization, {
+    if (!token) throw new UnauthorizedException('No Bearer Token Provided');
+
+    const data = this.tokenService.verifyToken(token, {
       secret: process.env.JWT_SECRET,
     });
 
@@ -30,8 +31,12 @@ export class AuthGuard implements CanActivate {
     if (!user) throw new NotFoundException('User not found');
 
     request.authUser = user;
-    console.log(user, 'user');
 
     return true;
+  }
+
+  private extractTokenFromHeader(request: Request): string | undefined {
+    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    return type === 'Bearer' ? token : undefined;
   }
 }

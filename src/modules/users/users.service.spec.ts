@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
-import { UserRepo } from 'src/modules/Repositories/user.repo';
+import { UserRepo } from 'src/modules/users/user.repo';
 import { UpdateUserDTO } from './DTOs/users.dto';
 
 describe('UsersService', () => {

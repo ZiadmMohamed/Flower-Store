@@ -8,9 +8,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { AuthGuard } from 'src/common/guards/auth.guard';
-import { Roles } from 'src/common/decorators/roles.decorator';
-import { GetUser } from 'src/common/decorators/get-user.decorator';
+import { AuthGuard } from '../../common/guards/auth.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { GetUser } from '../../common/decorators/get-user.decorator';
 import { UserDocument } from '../users/schema/user.schema';
 import { categoryDocument } from './schema/category.model';
 import {
@@ -18,7 +18,7 @@ import {
   CreateCategoryDTO,
   UpdateCategoryDTO,
 } from './DTO/create.category.DTO';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
 @Controller('category')
 @ApiTags('categories')
@@ -28,9 +28,8 @@ export class CategoryController {
   @Post('')
   @UseGuards(AuthGuard)
   @Roles(['admin'])
-  @ApiResponse({ status: 201, description: 'category created successfully' })
-  @ApiOperation({ summary: 'Creates a new category .' })
   @ApiBody({ type: CreateCategoryDTO })
+  @ApiBearerAuth()
   async createCategory(
     @GetUser() user: UserDocument,
     @Body() body: CreateCategoryDTO,
@@ -42,11 +41,10 @@ export class CategoryController {
       data: category,
     };
   }
+
   @Post(':categoryId')
   @UseGuards(AuthGuard)
   @Roles(['admin'])
-  @ApiResponse({ status: 201, description: 'category update successfully' })
-  @ApiOperation({ summary: 'update  category .' })
   @ApiBody({ type: UpdateCategoryDTO })
   async updateCategory(
     @GetUser() user: UserDocument,
@@ -72,8 +70,6 @@ export class CategoryController {
   @Delete(':categoryId')
   @UseGuards(AuthGuard)
   @Roles(['admin'])
-  @ApiResponse({ status: 201, description: 'category delete successfully' })
-  @ApiOperation({ summary: 'delete  category .' })
   async deleteCategory(
     @GetUser() user: UserDocument,
     @Param() param: CategoryIdDTO,
@@ -83,10 +79,6 @@ export class CategoryController {
   }
 
   @Get(':categoryId')
-  @UseGuards(AuthGuard)
-  @Roles(['admin', 'user'])
-  @ApiResponse({ status: 201, description: 'get category' })
-  @ApiOperation({ summary: 'get  category .' })
   async getCategory(
     @GetUser() user: UserDocument,
     @Param() param: CategoryIdDTO,
@@ -104,10 +96,6 @@ export class CategoryController {
   }
 
   @Get('')
-  @UseGuards(AuthGuard)
-  @Roles(['admin', 'user'])
-  @ApiResponse({ status: 201, description: 'get all category' })
-  @ApiOperation({ summary: 'get all category .' })
   async getAllCategory(): Promise<{
     success: boolean;
     message: string;
