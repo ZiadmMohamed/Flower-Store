@@ -66,7 +66,10 @@ export class AuthService {
     const user = await this.userRepo.findByEmail(email);
 
     if (!user || !compareHash(password, user.password))
-      throw new ConflictException('User not found');
+      throw new ConflictException('Invalid Credentials');
+
+    if (!user.emailVerified)
+      throw new ConflictException('Please verify your email');
 
     // Generate token
     const accessToken = this.tokenService.generateToken(
