@@ -19,7 +19,7 @@ export class CartRepo extends BaseRepo<CartType> {
   ): Promise<UpdateResult> {
     return this.cartModel.updateOne(
       { userId },
-      { $set: { createCartDto } },
+      { $set: { products: createCartDto.products } },
       { upsert: true },
     );
   }

@@ -15,7 +15,7 @@ export class CartService {
     const cart = await this.cartRepo.findOne({ filters: { userId } });
 
     if (cart && cart.products.length > 0)
-      this.updateCartProducts(cart, createCartDto);
+      createCartDto = this.updateCartProducts(cart, createCartDto);
 
     return this.cartRepo.upsertCart(createCartDto, userId);
   }

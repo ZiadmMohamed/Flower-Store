@@ -3,6 +3,7 @@ import { HydratedDocument, Types } from 'mongoose';
 import { Product } from '../../product/schema/product.model';
 import { User } from '../../users/schema/user.schema';
 
+@Schema({ timestamps: true })
 class CartProductItem {
   @Prop({ type: Types.ObjectId, ref: Product.name, required: true })
   productId: Types.ObjectId;
@@ -11,6 +12,7 @@ class CartProductItem {
   quantity: number;
 }
 const CartProductItemSchema = SchemaFactory.createForClass(CartProductItem);
+CartProductItemSchema.set('_id', false);
 
 @Schema({ timestamps: true })
 export class Cart {
@@ -20,9 +22,6 @@ export class Cart {
   @Prop({ type: [CartProductItemSchema], required: true, default: [] })
   products: CartProductItem[];
 }
-
-CartProductItemSchema.set('_id', false);
-CartProductItemSchema.set('timestamps', true);
 
 export const CartSchema = SchemaFactory.createForClass(Cart);
 CartSchema.index({ userId: 1 }, { unique: true });
