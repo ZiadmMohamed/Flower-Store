@@ -1,16 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CartRepo } from './cart.repo';
 import { CreateCartDto } from './dto/create-cart.dto';
-import { ProductService } from '../product/product.service';
 import { Types, UpdateResult } from 'mongoose';
 import { Cart } from './schema/cart.schema';
 
 @Injectable()
 export class CartService {
-  constructor(
-    private readonly cartRepo: CartRepo,
-    private readonly productService: ProductService,
-  ) {}
+  constructor(private readonly cartRepo: CartRepo) {}
 
   async createCart(
     createCartDto: CreateCartDto,
@@ -24,6 +20,7 @@ export class CartService {
     return this.cartRepo.upsertCart(createCartDto, userId);
   }
 
+  // TODO: refactor this method for better performance
   private updateCartProducts(
     cart: Cart,
     createCartDto: CreateCartDto,

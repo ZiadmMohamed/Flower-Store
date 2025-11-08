@@ -4,7 +4,6 @@ import { CartService } from './cart.service';
 import { CartRepo } from './cart.repo';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Cart, CartSchema } from './schema/cart.schema';
-import { ProductModule } from '../product/product.module';
 import { UsersModule } from '../users/users.module';
 import { JwtService } from '@nestjs/jwt';
 import { TokenService } from 'src/common/services/token.service';
@@ -14,7 +13,6 @@ import { TokenService } from 'src/common/services/token.service';
   providers: [CartService, CartRepo, TokenService, JwtService],
   imports: [
     MongooseModule.forFeature([{ name: Cart.name, schema: CartSchema }]),
-    ProductModule,
     UsersModule,
   ],
 })

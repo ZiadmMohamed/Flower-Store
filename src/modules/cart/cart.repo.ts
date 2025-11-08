@@ -17,8 +17,10 @@ export class CartRepo extends BaseRepo<CartType> {
     createCartDto: CreateCartDto,
     userId: Types.ObjectId,
   ): Promise<UpdateResult> {
-    return this.cartModel
-      .updateOne({ userId }, { $set: { ...createCartDto } }, { upsert: true })
-      .lean();
+    return this.cartModel.updateOne(
+      { userId },
+      { $set: { createCartDto } },
+      { upsert: true },
+    );
   }
 }
