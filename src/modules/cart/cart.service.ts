@@ -1,8 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CartRepo } from './cart.repo';
-import { CreateCartDto } from './dto/create-cart.dto';
+import { CreateCartDto, CreateCartProductItem } from './dto/create-cart.dto';
 import { Types, UpdateResult } from 'mongoose';
-import { Cart } from './schema/cart.schema';
 
 @Injectable()
 export class CartService {
@@ -15,44 +14,32 @@ export class CartService {
     const cart = await this.cartRepo.findOne({ filters: { userId } });
 
     if (cart && cart.products.length > 0)
-      createCartDto = this.updateCartProducts(cart, createCartDto);
+      createCartDto.products = this.updateCartProducts(
+        cart.products,
+        createCartDto.products,
+      );
 
     return this.cartRepo.upsertCart(createCartDto, userId);
   }
 
-  // TODO: refactor this method for better performance
   private updateCartProducts(
-    cart: Cart,
-    createCartDto: CreateCartDto,
-  ): CreateCartDto {
-    const existingProducts = cart.products;
+    existingProducts: CreateCartProductItem[],
+    newProducts: CreateCartProductItem[],
+  ): CreateCartProductItem[] {
+    const newProductsIds = newProducts.map(p => p.productId);
+    const newProductsIdsUnique = new Set(newProductsIds);
+
+    if (newProductsIdsUnique.size !== newProducts.length)
+      throw new BadRequestException('Duplicate product IDs found');
 
     const existingMap = new Map(
       existingProducts.map(p => [p.productId, p.quantity]),
     );
 
-    const updatedProducts = createCartDto.products.map(newProduct => {
-      const existingQty = existingMap.get(newProduct.productId) || 0;
-      return {
-        ...newProduct,
-        quantity: newProduct.quantity + existingQty,
-      };
-    });
-
-    if (updatedProducts.length === 0) return createCartDto;
-
-    for (const oldProduct of existingProducts) {
-      const existsInNew = createCartDto.products.some(
-        p => p.productId === oldProduct.productId,
-      );
-      if (!existsInNew) {
-        updatedProducts.push(oldProduct);
-      }
-    }
-
-    return {
-      ...createCartDto,
-      products: updatedProducts,
-    };
+    return newProducts.map(newProduct => ({
+      ...newProduct,
+      quantity:
+        newProduct.quantity + (existingMap.get(newProduct.productId) || 0),
+    }));
   }
 }

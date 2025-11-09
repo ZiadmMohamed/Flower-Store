@@ -16,7 +16,7 @@ CartProductItemSchema.set('_id', false);
 
 @Schema({ timestamps: true })
 export class Cart {
-  @Prop({ type: Types.ObjectId, ref: User.name, required: true, index: true })
+  @Prop({ type: Types.ObjectId, ref: User.name, required: true })
   userId: Types.ObjectId;
 
   @Prop({ type: [CartProductItemSchema], required: true, default: [] })
