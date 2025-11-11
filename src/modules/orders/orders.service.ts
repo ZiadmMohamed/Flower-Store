@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { OrderRepo } from './orders.repo';
 import { ORDER_STATUS, OrderType, PAYMENT_STATUS } from './schema/order.schema';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -6,27 +6,36 @@ import { Types } from 'mongoose';
 import { ProductService } from '../product/product.service';
 import { productDocument } from '../product/schema/product.model';
 import { OrderCalculation } from './dto/order';
+import { CartRepo } from '../cart/cart.repo';
+import { CreateCartProductItem } from '../cart/dto/create-cart.dto';
+import { Ipaginate } from 'src/utils/base.repo';
 
 @Injectable()
 export class OrdersService {
   constructor(
     private orderRepo: OrderRepo,
     private productService: ProductService,
+    private cartRepo: CartRepo,
   ) {}
-
+  // TODO:Refactor 'too many await'
   async createOrder(
     createOrderDTO: CreateOrderDto,
     userId: Types.ObjectId,
   ): Promise<OrderType> {
-    const products = await this.productService.validateProductsStock(
-      createOrderDTO.products,
-    );
-    await this.productService.decreaseProductsStock(createOrderDTO.products);
+    const cart = await this.cartRepo.findOne({
+      filters: { userId: userId.toString() },
+    });
 
-    const orderCalculation = this.calculateOrderTotal(
-      products,
-      createOrderDTO.products,
+    if (!cart || cart.products.length === 0) {
+      throw new NotFoundException('Cart is empty');
+    }
+
+    const products = await this.productService.validateProductsStock(
+      cart.products,
     );
+    await this.productService.decreaseProductsStock(cart.products);
+
+    const orderCalculation = this.calculateOrderTotal(products, cart.products);
     // TODO: Implement promo code validation and discount logic
     // 3. Validate and apply promo code if provided
     // if (createOrderDTO.promoCode) {
@@ -46,15 +55,27 @@ export class OrdersService {
 
     const savedOrder = await this.orderRepo.save(order);
 
+    await this.cartRepo.deleteOne({ _id: cart._id });
+
     // TODO: Send order confirmation email/notification
     // await this.notificationService.sendOrderConfirmation(savedOrder);
 
     return savedOrder;
   }
 
+  async getOrders(userId: Types.ObjectId): Promise<Ipaginate<OrderType>> {
+    const orders = (await this.orderRepo.find({
+      filters: { userId },
+    })) as Ipaginate<OrderType>;
+
+    if (!orders?.data?.length) throw new NotFoundException('No orders found');
+
+    return orders;
+  }
+
   private calculateOrderTotal(
     products: productDocument[],
-    orderItems: CreateOrderDto['products'],
+    orderItems: CreateCartProductItem[],
   ): OrderCalculation {
     const productsWithPrices = orderItems.map(item => {
       const product = products.find(

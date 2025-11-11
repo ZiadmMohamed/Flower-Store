@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
 import { ProductModule } from '../product/product.module';
 import { ProductExistsConstraint } from '../../common/validators/product-exists.validator';
+import { CartModule } from '../cart/cart.module';
 
 @Module({
   controllers: [OrdersController],
@@ -23,6 +24,7 @@ import { ProductExistsConstraint } from '../../common/validators/product-exists.
     MongooseModule.forFeature([{ name: Order.name, schema: OrderSchema }]),
     UsersModule,
     ProductModule,
+    CartModule,
   ],
 })
 export class OrdersModule {}

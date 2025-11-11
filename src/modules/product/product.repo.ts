@@ -3,7 +3,7 @@ import { Product, productDocument } from './schema/product.model';
 import { BaseRepo } from '../../utils/base.repo';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateOrderProductItem } from '../orders/dto/create-order.dto';
+import { CreateCartProductItem } from '../cart/dto/create-cart.dto';
 @Injectable()
 export class ProductRepo extends BaseRepo<productDocument> {
   constructor(
@@ -17,7 +17,7 @@ export class ProductRepo extends BaseRepo<productDocument> {
   }
 
   async decreaseProductsStock(
-    updates: CreateOrderProductItem[],
+    updates: CreateCartProductItem[],
   ): Promise<number> {
     if (!updates.length) return 0;
 
@@ -36,7 +36,7 @@ export class ProductRepo extends BaseRepo<productDocument> {
   }
 
   async isProductInStock(
-    product: CreateOrderProductItem,
+    product: CreateCartProductItem,
   ): Promise<productDocument> {
     const result = await this.ProductModel.findOne({
       _id: product.productId,

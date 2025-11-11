@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { GetUser } from '../../common/decorators/get-user.decorator';
@@ -12,7 +12,7 @@ import { UserType } from '../users/schema/user.schema';
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
-  @Post()
+  @Post('checkout')
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @Roles([UserRoles.USER, UserRoles.ADMIN])
@@ -21,5 +21,13 @@ export class OrdersController {
     @GetUser() user: UserType,
   ) {
     return this.ordersService.createOrder(createOrderDto, user._id);
+  }
+
+  @Get()
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @Roles([UserRoles.USER, UserRoles.ADMIN])
+  async getOrders(@GetUser() user: UserType) {
+    return this.ordersService.getOrders(user._id);
   }
 }

@@ -15,5 +15,6 @@ import { TokenService } from 'src/common/services/token.service';
     MongooseModule.forFeature([{ name: Cart.name, schema: CartSchema }]),
     UsersModule,
   ],
+  exports: [CartService, CartRepo],
 })
 export class CartModule {}
