@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CartRepo } from './cart.repo';
 import { CreateCartDto, CreateCartProductItem } from './dto/create-cart.dto';
 import { Types, UpdateResult } from 'mongoose';
+import { Cart } from './schema/cart.schema';
 
 @Injectable()
 export class CartService {
@@ -20,6 +21,17 @@ export class CartService {
       );
 
     return this.cartRepo.upsertCart(createCartDto, userId);
+  }
+
+  async getCart(userId: Types.ObjectId): Promise<Cart> {
+    return this.cartRepo.findOne({ filters: { userId } });
+  }
+
+  async updateCart(
+    userId: Types.ObjectId,
+    updateCartDto: CreateCartDto,
+  ): Promise<Cart> {
+    return await this.cartRepo.updateOne({ userId }, updateCartDto);
   }
 
   private updateCartProducts(

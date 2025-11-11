@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { GetUser } from 'src/common/decorators/get-user.decorator';
@@ -24,6 +24,33 @@ export class CartController {
 
     return {
       message: 'Cart created successfully',
+    };
+  }
+
+  @Get()
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @Roles([UserRoles.USER, UserRoles.ADMIN])
+  async getCart(@GetUser() user: UserType) {
+    const cart = await this.cartService.getCart(user.id);
+    return {
+      message: 'Cart fetched successfully',
+      data: cart,
+    };
+  }
+
+  @Patch()
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @Roles([UserRoles.USER, UserRoles.ADMIN])
+  async updateCart(
+    @Body() updateCartDto: CreateCartDto,
+    @GetUser() user: UserType,
+  ) {
+    const cart = await this.cartService.updateCart(user.id, updateCartDto);
+    return {
+      message: 'Cart updated successfully',
+      data: cart,
     };
   }
 }
