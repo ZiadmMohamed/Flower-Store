@@ -14,6 +14,7 @@ import { ProductModule } from './modules/product/product.module';
 import { CategoryModule } from './modules/category/category.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { CartModule } from './modules/cart/cart.module';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -44,6 +45,17 @@ import { CartModule } from './modules/cart/cart.module';
         limit: 10, // 10 requests
       },
     ]),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        connection: {
+          host: configService.get<string>('REDIS_HOST') || 'localhost',
+          port: Number(configService.get<string>('REDIS_PORT')) || 6379,
+          password: configService.get<string>('REDIS_PASSWORD') || undefined,
+        },
+      }),
+    }),
     PrometheusModule.register({
       path: '/metrics',
     }),
@@ -64,4 +76,4 @@ import { CartModule } from './modules/cart/cart.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

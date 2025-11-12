@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { OrderRepo } from './orders.repo';
 import { ORDER_STATUS, OrderType, PAYMENT_STATUS } from './schema/order.schema';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -9,16 +9,82 @@ import { OrderCalculation } from './dto/order';
 import { CartRepo } from '../cart/cart.repo';
 import { CreateCartProductItem } from '../cart/dto/create-cart.dto';
 import { Ipaginate } from 'src/utils/base.repo';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
+import { CHECKOUT_JOB, ORDER_QUEUE } from './order.constants';
 
 @Injectable()
 export class OrdersService {
+  private readonly logger = new Logger(OrdersService.name);
+
   constructor(
     private orderRepo: OrderRepo,
     private productService: ProductService,
     private cartRepo: CartRepo,
+    @InjectQueue(ORDER_QUEUE) private orderQueue: Queue,
   ) {}
-  // TODO:Refactor 'too many await'
-  async createOrder(
+
+  async enqueueCheckout(
+    createOrderDTO: CreateOrderDto,
+    userId: Types.ObjectId,
+  ): Promise<{ jobId: string; status: string; message: string }> {
+    try {
+      const job = await this.orderQueue.add(
+        CHECKOUT_JOB,
+        {
+          dto: createOrderDTO,
+          userId: userId.toString(),
+        },
+        {
+          attempts: 3,
+          backoff: {
+            type: 'exponential',
+            delay: 2000,
+          },
+          removeOnComplete: 100,
+          removeOnFail: 500,
+        },
+      );
+
+      this.logger.log(
+        `Order checkout job enqueued successfully. JobId: ${job.id}`,
+      );
+
+      return {
+        jobId: job.id as string,
+        status: 'queued',
+        message: 'Order is being processed',
+      };
+    } catch (error) {
+      this.logger.error(
+        `Failed to enqueue checkout job for user ${userId}: ${error.message}`,
+      );
+      throw error;
+    }
+  }
+
+  async getJobStatus(jobId: string) {
+    const job = await this.orderQueue.getJob(jobId);
+
+    if (!job) {
+      throw new NotFoundException(`Job with ID ${jobId} not found`);
+    }
+
+    const state = await job.getState();
+    const progress = job.progress;
+    const returnValue = job.returnvalue;
+    const failedReason = job.failedReason;
+
+    return {
+      id: job.id,
+      state,
+      progress,
+      result: returnValue,
+      failedReason,
+    };
+  }
+
+  async processOrder(
     createOrderDTO: CreateOrderDto,
     userId: Types.ObjectId,
   ): Promise<OrderType> {
