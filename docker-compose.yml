@@ -12,8 +12,8 @@ services:
     environment:
       - NODE_ENV=production
       - MONGODB_URI=mongodb://mongo:27017/flower_store
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      - REDIS_URL=redis://localhost:6379
+
     depends_on:
       mongo:
         condition: service_healthy

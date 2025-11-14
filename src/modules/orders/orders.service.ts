@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { OrderRepo } from './orders.repo';
 import { ORDER_STATUS, OrderType, PAYMENT_STATUS } from './schema/order.schema';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -6,27 +6,107 @@ import { Types } from 'mongoose';
 import { ProductService } from '../product/product.service';
 import { productDocument } from '../product/schema/product.model';
 import { OrderCalculation } from './dto/order';
+import { CartRepo } from '../cart/cart.repo';
+import { CreateCartProductItem } from '../cart/dto/create-cart.dto';
+import { Ipaginate } from 'src/utils/base.repo';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
+import { CHECKOUT_JOB, ORDER_QUEUE } from './order.constants';
+import {
+  EnqueueCheckoutResponse,
+  EnqueueCheckoutStatus,
+} from './dto/enqueue-checkout';
+import { GetOrderStatusResponse } from './dto/get-order-status.response';
 
 @Injectable()
 export class OrdersService {
+  private readonly logger = new Logger(OrdersService.name);
+
   constructor(
     private orderRepo: OrderRepo,
     private productService: ProductService,
+    private cartRepo: CartRepo,
+    @InjectQueue(ORDER_QUEUE) private orderQueue: Queue,
   ) {}
 
-  async createOrder(
+  async enqueueCheckout(
+    createOrderDTO: CreateOrderDto,
+    userId: Types.ObjectId,
+  ): Promise<EnqueueCheckoutResponse> {
+    try {
+      const job = await this.orderQueue.add(
+        CHECKOUT_JOB,
+        {
+          dto: createOrderDTO,
+          userId: userId.toString(),
+        },
+        {
+          attempts: 3,
+          backoff: {
+            type: 'exponential',
+            delay: 2000,
+          },
+          removeOnComplete: 100,
+          removeOnFail: 500,
+        },
+      );
+
+      this.logger.log(
+        `Order checkout job enqueued successfully. JobId: ${job.id}`,
+      );
+
+      return {
+        jobId: job.id as string,
+        status: EnqueueCheckoutStatus.QUEUED,
+        message: 'Order is being processed',
+      };
+    } catch (error) {
+      this.logger.error(
+        `Failed to enqueue checkout job for user ${userId}: ${error.message}`,
+      );
+      throw error;
+    }
+  }
+
+  async getJobStatus(jobId: string): Promise<GetOrderStatusResponse> {
+    const job = await this.orderQueue.getJob(jobId);
+
+    if (!job) {
+      throw new NotFoundException(`Job with ID ${jobId} not found`);
+    }
+
+    const state = await job.getState();
+    const progress = job.progress;
+    const returnValue = job.returnvalue;
+    const failedReason = job.failedReason;
+
+    return {
+      id: job.id,
+      state,
+      progress,
+      result: returnValue,
+      failedReason,
+    };
+  }
+
+  async processOrder(
     createOrderDTO: CreateOrderDto,
     userId: Types.ObjectId,
   ): Promise<OrderType> {
-    const products = await this.productService.validateProductsStock(
-      createOrderDTO.products,
-    );
-    await this.productService.decreaseProductsStock(createOrderDTO.products);
+    const cart = await this.cartRepo.findOne({
+      filters: { userId: userId.toString() },
+    });
 
-    const orderCalculation = this.calculateOrderTotal(
-      products,
-      createOrderDTO.products,
+    if (!cart || cart.products.length === 0) {
+      throw new NotFoundException('Cart is empty');
+    }
+
+    const products = await this.productService.validateProductsStock(
+      cart.products,
     );
+    await this.productService.decreaseProductsStock(cart.products);
+
+    const orderCalculation = this.calculateOrderTotal(products, cart.products);
     // TODO: Implement promo code validation and discount logic
     // 3. Validate and apply promo code if provided
     // if (createOrderDTO.promoCode) {
@@ -46,15 +126,27 @@ export class OrdersService {
 
     const savedOrder = await this.orderRepo.save(order);
 
+    await this.cartRepo.deleteOne({ _id: cart._id });
+
     // TODO: Send order confirmation email/notification
     // await this.notificationService.sendOrderConfirmation(savedOrder);
 
     return savedOrder;
   }
 
+  async getOrders(userId: Types.ObjectId): Promise<Ipaginate<OrderType>> {
+    const orders = (await this.orderRepo.find({
+      filters: { userId },
+    })) as Ipaginate<OrderType>;
+
+    if (!orders?.data?.length) throw new NotFoundException('No orders found');
+
+    return orders;
+  }
+
   private calculateOrderTotal(
     products: productDocument[],
-    orderItems: CreateOrderDto['products'],
+    orderItems: CreateCartProductItem[],
   ): OrderCalculation {
     const productsWithPrices = orderItems.map(item => {
       const product = products.find(
