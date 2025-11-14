@@ -12,6 +12,11 @@ import { Ipaginate } from 'src/utils/base.repo';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { CHECKOUT_JOB, ORDER_QUEUE } from './order.constants';
+import {
+  EnqueueCheckoutResponse,
+  EnqueueCheckoutStatus,
+} from './dto/enqueue-checkout';
+import { GetOrderStatusResponse } from './dto/get-order-status.response';
 
 @Injectable()
 export class OrdersService {
@@ -27,7 +32,7 @@ export class OrdersService {
   async enqueueCheckout(
     createOrderDTO: CreateOrderDto,
     userId: Types.ObjectId,
-  ): Promise<{ jobId: string; status: string; message: string }> {
+  ): Promise<EnqueueCheckoutResponse> {
     try {
       const job = await this.orderQueue.add(
         CHECKOUT_JOB,
@@ -52,7 +57,7 @@ export class OrdersService {
 
       return {
         jobId: job.id as string,
-        status: 'queued',
+        status: EnqueueCheckoutStatus.QUEUED,
         message: 'Order is being processed',
       };
     } catch (error) {
@@ -63,7 +68,7 @@ export class OrdersService {
     }
   }
 
-  async getJobStatus(jobId: string) {
+  async getJobStatus(jobId: string): Promise<GetOrderStatusResponse> {
     const job = await this.orderQueue.getJob(jobId);
 
     if (!job) {
