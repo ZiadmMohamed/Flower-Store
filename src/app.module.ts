@@ -9,12 +9,12 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { CacheModule } from '@nestjs/cache-manager';
-import * as redisStore from 'cache-manager-redis-store';
 import { ProductModule } from './modules/product/product.module';
 import { CategoryModule } from './modules/category/category.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { CartModule } from './modules/cart/cart.module';
 import { BullModule } from '@nestjs/bullmq';
+import { redisStore } from 'cache-manager-redis-store';
 
 @Module({
   imports: [
@@ -29,14 +29,19 @@ import { BullModule } from '@nestjs/bullmq';
       inject: [ConfigService],
     }),
     CacheModule.registerAsync({
+      isGlobal: true,
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        store: redisStore,
-        host: configService.get<string>('REDIS_HOST') || 'localhost',
-        port: Number(configService.get<string>('REDIS_PORT')) || 6379,
-        password: configService.get<string>('REDIS_PASSWORD') || undefined,
-        // ttl: 300,
+        store: await redisStore({
+          url: configService.get('REDIS_URL'),
+          // socket: {
+          //   tls:
+          //     configService.get('NODE_ENV') === Environment.Production
+          //       ? true
+          //       : false,
+          // },
+        }),
       }),
     }),
     ThrottlerModule.forRoot([
@@ -50,9 +55,7 @@ import { BullModule } from '@nestjs/bullmq';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         connection: {
-          host: configService.get<string>('REDIS_HOST') || 'localhost',
-          port: Number(configService.get<string>('REDIS_PORT')) || 6379,
-          password: configService.get<string>('REDIS_PASSWORD') || undefined,
+          url: configService.get<string>('REDIS_URL'),
         },
       }),
     }),
