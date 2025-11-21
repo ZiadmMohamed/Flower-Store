@@ -1,4 +1,4 @@
-import { Model, FilterQuery, PopulateOptions, Document } from 'mongoose';
+import { Model, FilterQuery, PopulateOptions, Document, UpdateQuery } from 'mongoose';
 
 interface IFindOne<TDoc> {
   filters: FilterQuery<TDoc>;
@@ -76,7 +76,7 @@ export abstract class BaseRepo<TDoc extends Document> {
     return this.model.findOneAndDelete(filters);
   }
 
-  async updateOne(filters: FilterQuery<TDoc>, data: Partial<TDoc>) {
+  async updateOne(filters: FilterQuery<TDoc>, data:UpdateQuery<TDoc>) {
     if (filters._id)
       return this.model.findByIdAndUpdate(filters._id, data, { new: true });
 

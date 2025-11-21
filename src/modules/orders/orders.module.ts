@@ -13,6 +13,7 @@ import { CartModule } from '../cart/cart.module';
 import { BullModule } from '@nestjs/bullmq';
 import { ORDER_QUEUE } from './order.constants';
 import { OrdersProcessor } from './orders.processor';
+import { PaymentService } from 'src/common/payment/payment.service';
 
 @Module({
   controllers: [OrdersController],
@@ -23,6 +24,7 @@ import { OrdersProcessor } from './orders.processor';
     JwtService,
     ProductExistsConstraint,
     OrdersProcessor,
+    PaymentService
   ],
   imports: [
     MongooseModule.forFeature([{ name: Order.name, schema: OrderSchema }]),

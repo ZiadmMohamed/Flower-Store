@@ -129,7 +129,7 @@ export class ProductService {
 
     return await this.ProductRepo.find({
       filters,
-      page,
+      
       populate: [{ path: 'category', select: 'categoryName' }],
     });
   }

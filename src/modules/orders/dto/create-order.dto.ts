@@ -5,7 +5,6 @@ export enum PAYMENT_METHODS {
   CREDIT_CARD = 'credit_card',
   CASH = 'cash',
 }
-
 export class CreateOrderDto {
   @ApiProperty({ type: String })
   @IsString()

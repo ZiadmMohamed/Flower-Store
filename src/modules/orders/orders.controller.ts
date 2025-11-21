@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { GetUser } from '../../common/decorators/get-user.decorator';
@@ -11,12 +11,15 @@ import { EnqueueCheckoutResponse } from './dto/enqueue-checkout';
 import { GetOrderStatusResponse } from './dto/get-order-status.response';
 import { OrderType } from './schema/order.schema';
 import { Ipaginate } from 'src/utils/base.repo';
+import Stripe from 'stripe';
+import { OrderIdDTO } from './dto/checkout.order.dto';
+import { Request } from 'express';
 
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
-  @Post('checkout')
+  @Post('')
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @Roles([UserRoles.USER, UserRoles.ADMIN])
@@ -53,4 +56,34 @@ export class OrdersController {
   async getOrders(@GetUser() user: UserType): Promise<Ipaginate<OrderType>> {
     return this.ordersService.getOrders(user._id);
   }
+
+  @Post("checkout/:orderId")
+ @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @Roles([UserRoles.USER, UserRoles.ADMIN])  
+  async checkout(@Param() params:OrderIdDTO,@GetUser() user:UserType):Promise<{message:string,data:{session: Stripe.Response<Stripe.Checkout.Session>}}>{
+  const session=  await this.ordersService.checkout(params.orderId,user)
+    return {message:"done",data:{session}}
+  }
+
+
+
+    @Post("webhook")
+   webhook(@Req() req:Request){
+  return  this.ordersService.webhook(req)
+
+  }
+
+  
+ @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @Roles([UserRoles.USER, UserRoles.ADMIN]) 
+  @Patch(":orderId/cancel")
+  async cancelOrder(@Param() params:OrderIdDTO,@GetUser() user:UserType){
+    console.log(params.orderId);
+    
+ const cancelOrder= await this.ordersService.cancelOrder(params.orderId,user)
+    return {message:"done"}
+  }
+
 }
