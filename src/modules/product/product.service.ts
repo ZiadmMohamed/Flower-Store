@@ -12,7 +12,7 @@ import { CategoryRepo } from '../category/category.repo';
 import { GetAllProductDTO } from './DTO/GetAllProductDTO.product.DTO';
 import { FilterQuery } from 'mongoose';
 import { productDocument } from './schema/product.model';
-import { CreateOrderProductItem } from '../orders/dto/create-order.dto';
+import { CreateCartProductItem } from '../cart/dto/create-cart.dto';
 
 @Injectable()
 export class ProductService {
@@ -134,14 +134,12 @@ export class ProductService {
     });
   }
 
-  async decreaseProductsStock(
-    updates: CreateOrderProductItem[],
-  ): Promise<void> {
+  async decreaseProductsStock(updates: CreateCartProductItem[]): Promise<void> {
     await this.ProductRepo.decreaseProductsStock(updates);
   }
 
   async validateProductsStock(
-    products: CreateOrderProductItem[],
+    products: CreateCartProductItem[],
   ): Promise<productDocument[]> {
     const stockChecks = products.map(async product => {
       const inStock = await this.ProductRepo.isProductInStock(product);

@@ -9,6 +9,10 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
 import { ProductModule } from '../product/product.module';
 import { ProductExistsConstraint } from '../../common/validators/product-exists.validator';
+import { CartModule } from '../cart/cart.module';
+import { BullModule } from '@nestjs/bullmq';
+import { ORDER_QUEUE } from './order.constants';
+import { OrdersProcessor } from './orders.processor';
 
 @Module({
   controllers: [OrdersController],
@@ -18,11 +22,16 @@ import { ProductExistsConstraint } from '../../common/validators/product-exists.
     TokenService,
     JwtService,
     ProductExistsConstraint,
+    OrdersProcessor,
   ],
   imports: [
     MongooseModule.forFeature([{ name: Order.name, schema: OrderSchema }]),
+    BullModule.registerQueue({
+      name: ORDER_QUEUE,
+    }),
     UsersModule,
     ProductModule,
+    CartModule,
   ],
 })
 export class OrdersModule {}

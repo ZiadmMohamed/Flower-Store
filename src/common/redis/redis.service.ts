@@ -7,11 +7,7 @@ export class RedisService implements OnModuleInit {
 
   async onModuleInit() {
     this.client = createClient({
-      socket: {
-        host: process.env.REDIS_HOST || 'localhost',
-        port: Number(process.env.REDIS_PORT) || 6379,
-      },
-      password: process.env.REDIS_PASSWORD || undefined,
+      url: process.env.REDIS_URL,
     });
 
     this.client.on('error', err => console.error('❌ Redis Error:', err));
