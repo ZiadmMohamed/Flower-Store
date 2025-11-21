@@ -71,12 +71,15 @@ export abstract class BaseRepo<TDoc extends Document> {
   }
 
   async deleteOne(filters: FilterQuery<TDoc>) {
-    if (filters._id) await this.model.findByIdAndDelete(filters._id);
+    if (filters._id) return this.model.findByIdAndDelete(filters._id);
+
     return this.model.findOneAndDelete(filters);
   }
 
   async updateOne(filters: FilterQuery<TDoc>, data: Partial<TDoc>) {
-    if (filters._id) await this.model.findByIdAndUpdate(filters._id, data);
+    if (filters._id)
+      return this.model.findByIdAndUpdate(filters._id, data, { new: true });
+
     return this.model.findOneAndUpdate(filters, data, { new: true });
   }
 }

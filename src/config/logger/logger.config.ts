@@ -3,11 +3,14 @@ import 'winston-daily-rotate-file';
 import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
 import { ClsServiceManager } from 'nestjs-cls';
 import * as DailyRotateFile from 'winston-daily-rotate-file';
-const cls = ClsServiceManager.getClsService();
-
 const addMetadata = winston.format(info => {
-  info.requestId = cls.get('requestId');
-  info.sessionId = cls.get('sessionId');
+  try {
+    const cls = ClsServiceManager.getClsService();
+    info.requestId = cls.get('requestId');
+    info.sessionId = cls.get('sessionId');
+  } catch (error) {
+    console.error(error);
+  }
   return info;
 });
 
