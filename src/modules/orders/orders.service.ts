@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { OrderRepo } from './orders.repo';
 import { ORDER_STATUS, OrderType, PAYMENT_STATUS } from './schema/order.schema';
 import { CreateOrderDto, PAYMENT_METHODS } from './dto/create-order.dto';
@@ -17,7 +22,7 @@ import {
   EnqueueCheckoutStatus,
 } from './dto/enqueue-checkout';
 import { GetOrderStatusResponse } from './dto/get-order-status.response';
-import { User, UserType } from '../users/schema/user.schema';
+import { UserType } from '../users/schema/user.schema';
 import { PaymentService } from 'src/common/payment/payment.service';
 import { ProductRepo } from '../product/product.repo';
 import { Request } from 'express';
@@ -238,7 +243,7 @@ export class OrdersService {
         'Order not found, already paid, or payment method is cash/invalid.',
       );
     }
-    let discounts: { coupon: string }[] = [];
+
     const line_items = [];
 
     // 2. Use the robust FOR...OF loop for asynchronous lookup
@@ -283,7 +288,6 @@ export class OrdersService {
       metadata: { orderId: orderId as unknown as string },
       cancel_url: `${process.env.cancel_url}/order/${orderId}/cancel`,
       success_url: `${process.env.success_url}/order/${orderId}/success`,
-      discounts,
       payment_method_types: ['card'],
     });
     const intent = await this.paymentService.createPaymentIntent(
@@ -300,12 +304,21 @@ export class OrdersService {
 
   async cancelOrder(orderId: Types.ObjectId, user: UserType) {
     console.log(orderId, user.id);
-if (!isValidObjectId(orderId)) {
-    // This should ideally be caught by a pipe, but serves as a backup.
-    throw new BadRequestException("Invalid Order ID provided."); 
-}
-    const order = await this.orderRepo.findOne({filters:{_id: new Types.ObjectId(orderId),userId:user._id,$or:[{orderStatus:ORDER_STATUS.PENDING},{orderStatus:ORDER_STATUS.CONFIRMED}]}})
-        console.log('order1', order);
+    if (!isValidObjectId(orderId)) {
+      // This should ideally be caught by a pipe, but serves as a backup.
+      throw new BadRequestException('Invalid Order ID provided.');
+    }
+    const order = await this.orderRepo.findOne({
+      filters: {
+        _id: new Types.ObjectId(orderId),
+        userId: user._id,
+        $or: [
+          { orderStatus: ORDER_STATUS.PENDING },
+          { orderStatus: ORDER_STATUS.CONFIRMED },
+        ],
+      },
+    });
+    console.log('order1', order);
 
     if (!order) {
       throw new NotFoundException('order is not found');

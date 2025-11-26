@@ -26,7 +26,7 @@ class OrderProductItem {
   @Prop({ type: Types.ObjectId, ref: Product.name, required: true })
   productId: Types.ObjectId;
 
-  @Prop({ type: Number, required: true, min: 1 ,default:1})
+  @Prop({ type: Number, required: true, min: 1, default: 1 })
   quantity: number;
 
   @Prop({ type: Number, required: true })
@@ -34,7 +34,6 @@ class OrderProductItem {
 
   @Prop({ type: Number, required: true })
   subtotal: number;
- 
 }
 const OrderProductItemSchema = SchemaFactory.createForClass(OrderProductItem);
 
@@ -87,13 +86,12 @@ export class Order {
 
   @Prop({ type: Number, required: true })
   total: number;
-    @Prop({ type: String, required: false })
+  @Prop({ type: String, required: false })
   intentId: string;
-   @Prop({type:Date,required:false})
-        paidAt?:Date ;
-           @Prop({required:false})
-
-        rejectedReason?:string;
+  @Prop({ type: Date, required: false })
+  paidAt?: Date;
+  @Prop({ required: false })
+  rejectedReason?: string;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

@@ -16,7 +16,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: WinstonModule.createLogger({ instance: loggerInstance }),
   });
-  app.use("/orders/webhook", express.raw({type:"application/json"}))
+  app.use('/orders/webhook', express.raw({ type: 'application/json' }));
 
   // Enable dependency injection for custom validators
   useContainer(app.select(AppModule), { fallbackOnErrors: true });

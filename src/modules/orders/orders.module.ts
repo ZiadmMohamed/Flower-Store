@@ -24,7 +24,7 @@ import { PaymentService } from 'src/common/payment/payment.service';
     JwtService,
     ProductExistsConstraint,
     OrdersProcessor,
-    PaymentService
+    PaymentService,
   ],
   imports: [
     MongooseModule.forFeature([{ name: Order.name, schema: OrderSchema }]),

@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { GetUser } from '../../common/decorators/get-user.decorator';
@@ -57,33 +66,37 @@ export class OrdersController {
     return this.ordersService.getOrders(user._id);
   }
 
-  @Post("checkout/:orderId")
- @UseGuards(AuthGuard)
+  @Post('checkout/:orderId')
+  @UseGuards(AuthGuard)
   @ApiBearerAuth()
-  @Roles([UserRoles.USER, UserRoles.ADMIN])  
-  async checkout(@Param() params:OrderIdDTO,@GetUser() user:UserType):Promise<{message:string,data:{session: Stripe.Response<Stripe.Checkout.Session>}}>{
-  const session=  await this.ordersService.checkout(params.orderId,user)
-    return {message:"done",data:{session}}
+  @Roles([UserRoles.USER, UserRoles.ADMIN])
+  async checkout(
+    @Param() params: OrderIdDTO,
+    @GetUser() user: UserType,
+  ): Promise<{
+    message: string;
+    data: { session: Stripe.Response<Stripe.Checkout.Session> };
+  }> {
+    const session = await this.ordersService.checkout(params.orderId, user);
+    return { message: 'done', data: { session } };
   }
 
-
-
-    @Post("webhook")
-   webhook(@Req() req:Request){
-  return  this.ordersService.webhook(req)
-
+  @Post('webhook')
+  webhook(@Req() req: Request) {
+    return this.ordersService.webhook(req);
   }
 
-  
- @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @ApiBearerAuth()
-  @Roles([UserRoles.USER, UserRoles.ADMIN]) 
-  @Patch(":orderId/cancel")
-  async cancelOrder(@Param() params:OrderIdDTO,@GetUser() user:UserType){
-    console.log(params.orderId   );
-    
- const cancelOrder= await this.ordersService.cancelOrder(params.orderId,user)
-    return {message:"done"}
-  }
+  @Roles([UserRoles.USER, UserRoles.ADMIN])
+  @Patch(':orderId/cancel')
+  async cancelOrder(@Param() params: OrderIdDTO, @GetUser() user: UserType) {
+    console.log(params.orderId);
 
+    const cancelOrder = await this.ordersService.cancelOrder(
+      params.orderId,
+      user,
+    );
+    return { message: 'done', data: cancelOrder };
+  }
 }
