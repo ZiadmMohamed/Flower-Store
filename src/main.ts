@@ -9,12 +9,14 @@ import { JwtExceptionFilter } from './common/exception-filters/jwt.exception-fil
 import { MongooseExceptionFilter } from './common/exception-filters/mongoos.exception-filter';
 import { ValidationPipe } from '@nestjs/common';
 import { useContainer } from 'class-validator';
+import * as express from 'express';
 
 async function bootstrap() {
   const loggerInstance = createLogger(winstonConfig);
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: WinstonModule.createLogger({ instance: loggerInstance }),
   });
+  app.use('/orders/webhook', express.raw({ type: 'application/json' }));
 
   // Enable dependency injection for custom validators
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
@@ -42,6 +44,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
 
-  await app.listen(9090);
+  await app.listen(5000);
 }
 bootstrap();

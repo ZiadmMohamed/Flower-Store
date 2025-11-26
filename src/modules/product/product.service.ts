@@ -105,7 +105,7 @@ export class ProductService {
   }
 
   async getAllORfilterproduct(query?: GetAllProductDTO) {
-    const { name, minLength, maxLength, category, page } = query;
+    const { name, minLength, maxLength, category } = query;
 
     const filters: FilterQuery<productDocument> = {};
     if (name) {
@@ -129,7 +129,7 @@ export class ProductService {
 
     return await this.ProductRepo.find({
       filters,
-      page,
+
       populate: [{ path: 'category', select: 'categoryName' }],
     });
   }

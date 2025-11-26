@@ -1,7 +1,12 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { OrderRepo } from './orders.repo';
 import { ORDER_STATUS, OrderType, PAYMENT_STATUS } from './schema/order.schema';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { CreateOrderDto, PAYMENT_METHODS } from './dto/create-order.dto';
 import { Types } from 'mongoose';
 import { ProductService } from '../product/product.service';
 import { productDocument } from '../product/schema/product.model';
@@ -17,6 +22,11 @@ import {
   EnqueueCheckoutStatus,
 } from './dto/enqueue-checkout';
 import { GetOrderStatusResponse } from './dto/get-order-status.response';
+import { UserType } from '../users/schema/user.schema';
+import { PaymentService } from 'src/common/payment/payment.service';
+import { ProductRepo } from '../product/product.repo';
+import { Request } from 'express';
+import { isValidObjectId } from 'mongoose';
 
 @Injectable()
 export class OrdersService {
@@ -26,6 +36,8 @@ export class OrdersService {
     private orderRepo: OrderRepo,
     private productService: ProductService,
     private cartRepo: CartRepo,
+    private paymentService: PaymentService,
+    private productRepo: ProductRepo,
     @InjectQueue(ORDER_QUEUE) private orderQueue: Queue,
   ) {}
 
@@ -88,7 +100,6 @@ export class OrdersService {
       failedReason,
     };
   }
-
   async processOrder(
     createOrderDTO: CreateOrderDto,
     userId: Types.ObjectId,
@@ -213,4 +224,137 @@ export class OrdersService {
   //     calculation.total = calculation.subtotal - calculation.discount;
   //   }
   // }
+
+  async checkout(orderId: Types.ObjectId, user: UserType) {
+    const orderDoc = await this.orderRepo.findOne({
+      filters: {
+        _id: orderId,
+        orderStatus: ORDER_STATUS.PENDING,
+        paymentStatus: PAYMENT_STATUS.UNPAID,
+        paymentMethod: PAYMENT_METHODS.CREDIT_CARD,
+      },
+    });
+
+    const order = orderDoc.toObject ? orderDoc.toObject() : orderDoc;
+    console.log(order);
+
+    if (!order) {
+      throw new NotFoundException(
+        'Order not found, already paid, or payment method is cash/invalid.',
+      );
+    }
+
+    const line_items = [];
+
+    // 2. Use the robust FOR...OF loop for asynchronous lookup
+    for (const p of order.products) {
+      const { productId, quantity, priceAtPurchase } = p;
+
+      // Lookup the product name
+      const product = await this.productRepo.findOne({
+        filters: { _id: productId },
+      });
+      if (!product) {
+        throw new NotFoundException(`Product with ID ${productId} not found.`);
+      }
+
+      // Price calculation: ensures safety against NaN
+      const safePrice = Number(priceAtPurchase);
+      const safeQuantity = Number(quantity);
+      const priceInPiasters = Math.round(safePrice * 100);
+
+      if (priceInPiasters <= 0) {
+        throw new Error(
+          `Invalid price detected for product ${product.productName}`,
+        );
+      }
+
+      line_items.push({
+        quantity: safeQuantity,
+        price_data: {
+          unit_amount: priceInPiasters,
+          currency: 'egp',
+          product_data: {
+            name: product.productName,
+          },
+        },
+      });
+    }
+
+    // 3. Create Stripe Checkout Session
+    const session = await this.paymentService.checkoutsession({
+      customer_email: user.email,
+      line_items,
+      metadata: { orderId: orderId as unknown as string },
+      cancel_url: `${process.env.cancel_url}/order/${orderId}/cancel`,
+      success_url: `${process.env.success_url}/order/${orderId}/success`,
+      payment_method_types: ['card'],
+    });
+    const intent = await this.paymentService.createPaymentIntent(
+      order.total * 100,
+    );
+    await this.orderRepo.updateOne({ _id: orderId }, { intentId: intent.id });
+
+    return session;
+  }
+
+  webhook(req: Request) {
+    return this.paymentService.webhook(req);
+  }
+
+  async cancelOrder(orderId: Types.ObjectId, user: UserType) {
+    console.log(orderId, user.id);
+    if (!isValidObjectId(orderId)) {
+      // This should ideally be caught by a pipe, but serves as a backup.
+      throw new BadRequestException('Invalid Order ID provided.');
+    }
+    const order = await this.orderRepo.findOne({
+      filters: {
+        _id: new Types.ObjectId(orderId),
+        userId: user._id,
+        $or: [
+          { orderStatus: ORDER_STATUS.PENDING },
+          { orderStatus: ORDER_STATUS.CONFIRMED },
+        ],
+      },
+    });
+    console.log('order1', order);
+
+    if (!order) {
+      throw new NotFoundException('order is not found');
+    }
+    console.log('order', order);
+
+    let refund = {};
+    if (
+      order.paymentMethod === PAYMENT_METHODS.CREDIT_CARD &&
+      order.orderStatus === ORDER_STATUS.CONFIRMED
+    ) {
+      await this.paymentService.refund(order.intentId);
+      refund = { refundAmount: order.total, refundAt: Date.now() };
+      for (const product of order.products) {
+        await this.productRepo.updateOne(
+          { _id: product.productId },
+          { $inc: { stock: product.quantity } },
+        );
+      }
+      await this.orderRepo.updateOne(
+        { _id: orderId, createdBy: user._id },
+        { orderStatus: ORDER_STATUS.CANCELLED, ...refund },
+      );
+    }
+    console.log(refund);
+    for (const product of order.products) {
+      await this.productRepo.updateOne(
+        { _id: product.productId },
+        { $inc: { stock: product.quantity } },
+      );
+    }
+    await this.orderRepo.updateOne(
+      { _id: new Types.ObjectId(orderId), userId: user._id },
+      { orderStatus: ORDER_STATUS.CANCELLED },
+    );
+
+    return 'done';
+  }
 }
